@@ -1,0 +1,97 @@
+/* Reset default browser styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body styles */
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Header styles */
+.homepageheader {
+  background-color: #f8f9fa;
+  padding: 20px 0;
+}
+
+.homepageheader .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.signinButton {
+  display: flex;
+}
+
+.uiloginbutton {
+  margin-right: 10px;
+}
+
+/* Search header styles */
+#srcheader {
+  background-color: #e9ecef;
+  padding: 10px 0;
+}
+
+#srcheader .container {
+  display: flex;
+  justify-content: center;
+}
+
+/* Login form styles */
+.holecontainer {
+  max-width: 400px;
+  margin: 110px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.signupform_content h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.signupform_text {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.signup_form .form-group {
+  margin-bottom: 15px;
+}
+
+.signup_error_msg {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Responsive styles */
+@media (max-width: 767px) {
+  .homepageheader .container {
+    flex-direction: column;
+  }
+
+  .homepageheader .col-md-8 {
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .homepageheader .col-md-4 {
+    text-align: center;
+  }
+
+  #srcheader .container {
+    flex-direction: column;
+  }
+
+  .holecontainer {
+    max-width: 100%;
+    margin: 50px 10px;
+    padding: 10px;
+  }
+}

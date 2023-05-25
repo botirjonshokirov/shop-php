@@ -1,139 +1,105 @@
-<?php include ( "inc/connect.inc.php" ); ?>
-<?php 
+<?php include("inc/connect.inc.php"); ?>
+<?php
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
-	$user = "";
-}
-else {
-	$user = $_SESSION['user_login'];
-	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
-	$uname_db = $get_user_email != null ? $get_user_email['firstName'] : null;
+    $user = "";
+} else {
+    $user = $_SESSION['user_login'];
+    $result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
+    $get_user_email = mysqli_fetch_assoc($result);
+    $uname_db = $get_user_email != null ? $get_user_email['firstName'] : null;
 }
 ?>
+<?php
+$categoryNames = array(
+    'Robo Noodles',
+    'Robo Snacks',
+    'Robo Sweets',
+    'Robo Hygiene',
+    'Robo Shampoo',
+    'Robo Soap & Detergent',
+    'Robo Drinks',
+    'Robo Seasonings'
+);
+
+shuffle($categoryNames);
+
+?>
+
+
+
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Welcome to AEH</title>
-		<link rel="stylesheet" type="text/css" href="css/style.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-		<script src="/js/homeslideshow.js"></script>
-	</head>
-	<body style="min-width: 980px;">
-		<div class="homepageheader" style="position: relative;">
-			<div class="signinButton loginButton">
-				<div class="uiloginbutton signinButton loginButton" style="margin-right: 40px;">
-					<?php 
-						if ($user!="") {
-							echo '<a style="text-decoration: none; color: #fff;" href="logout.php">LOG OUT</a>';
-						}
-						else {
-							echo '<a style="color: #fff; text-decoration: none;" href="signin.php">SIGN UP</a>';
-						}
-					 ?>
-					
-				</div>
-				<div class="uiloginbutton signinButton loginButton" style="">
-					<?php 
-						if ($user!="") {
-							echo '<a style="text-decoration: none; color: #fff;" href="profile.php?uid='.$user.'">Hi '.$uname_db.'</a>';
-						}
-						else {
-							echo '<a style="text-decoration: none; color: #fff;" href="login.php">LOG IN</a>';
-						}
-					 ?>
-				</div>
-			</div>
-			<div style="float: left; margin: 5px 0px 0px 23px;">
-				<a href="index.php">
-					<img style=" height: 75px; width: 130px;" src="image/cart.png">
-				</a>
-			</div>
-			<div class="">
-				<div id="srcheader">
-					<form id="newsearch" method="get" action="search.php">
-					        <input type="text" class="srctextinput" name="keywords" size="21" maxlength="120"  placeholder="Search Here..."><input type="submit" value="search" class="srcbutton" >
-					</form>
-				<div class="srcclear"></div>
-				</div>
-			</div>
-		</div>
-		<div class="home-welcome">
-			<div class="home-welcome-text" style="background-image: url(image/background.jpg); height: 380px; ">
-				<div style="padding-top: 180px;">
-					<div style=" background-color: #dadbe6;">
-						<h1 style="margin: 0px;">AEH</h1>
-						<h2>Most Convenient Store in 7th ave. Caloocan</h2>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="home-prodlist">
-			<div>
-				<h3 style="text-align: center;">Products Category</h3>
-			</div>
-			<div style="padding: 20px 30px; width: 85%; margin: 0 auto;">
-				<ul style="float: left;">
-					<li style="float: left; padding: 25px;">
-						<div class="home-prodlist-img"><a href="OurProducts/NoodlesCanned.php">
-							<img src="./image/product/noodles/n.jpg" class="home-prodlist-imgi">
-							</a>
-						</div>
-					</li>
-				</ul>
-				<ul style="float: left;">
-					<li style="float: left; padding: 25px;">
-						<div class="home-prodlist-img"><a href="OurProducts/Snacks.php">
-							<img src="./image/product/snack/sn.jpg" class="home-prodlist-imgi">
-							</a>
-						</div>
-					</li>
-				</ul>
-				<ul style="float: left;">
-					<li style="float: left; padding: 25px;">
-						<div class="home-prodlist-img"><a href="OurProducts/Sweets.php">
-							<img src="./image/product/sweet/s.jpg" class="home-prodlist-imgi"></a>
-						</div>
-					</li>
-				</ul>
-				<ul style="float: left;">
-					<li style="float: left; padding: 25px;">
-						<div class="home-prodlist-img"><a href="OurProducts/Hygene.php">
-							<img src="./image/product/hygiene/hy.jpg" class="home-prodlist-imgi"></a>
-						</div>
-					</li>
-				</ul>
-				<ul style="float: left;">
-					<li style="float: left; padding: 25px;">
-						<div class="home-prodlist-img"><a href="OurProducts/Shampoo.php">
-							<img src="./image/product/shampoo/pall.jpg" class="home-prodlist-imgi"></a>
-						</div>
-					</li>
-				</ul>
-				<ul style="float: left;">
-					<li style="float: left; padding: 25px;">
-						<div class="home-prodlist-img"><a href="OurProducts/Soap&Detergent.php">
-							<img src="./image/product/soap/sp.jpg" class="home-prodlist-imgi"></a>
-						</div>
-					</li>
-				</ul>
-				<ul style="float: left;">
-					<li style="float: left; padding: 25px;">
-						<div class="home-prodlist-img"><a href="OurProducts/Drinks.php">
-							<img src="./image/product/drink/dr.jpg" class="home-prodlist-imgi"></a>
-						</div>
-					</li>
-				</ul>
-				<ul style="float: left;">
-					<li style="float: left; padding: 25px;">
-						<div class="home-prodlist-img"><a href="OurProducts/Seasonings.php">
-							<img src="./image/product/seasoning/cond.jpg" class="home-prodlist-imgi"></a>
-						</div>
-					</li>
-				</ul>
-			</div>			
-		</div>
-	</body>
+
+<head>
+    <title>Welcome to ROBO HASH Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="container-fluid">
+
+        <?php include("./components/navbar.php"); ?>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="search-bar">
+                    <form id="search-form" method="get" action="search.php" class="d-flex justify-content-center">
+                        <div class="input-group">
+                            <input type="text" class="form-control search-input" name="keywords" placeholder="Search Here...">
+                            <button type="submit" class="btn btn-primary search-button"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="home-welcome">
+                    <div class="home-welcome-text">
+                        <div style="padding-top: 180px;">
+                            <div>
+                                <h1>ROBO HASH STORE</h1>
+                                <h2>You can buy any ROBO HASH photos</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="home-prodlist">
+                    <div>
+                        <h3 class="text-center">Products Category</h3>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <ul class="list-inline">
+                            <?php foreach ($categoryNames as $name) { ?>
+                                <li class="list-inline-item">
+                                    <div class="home-prodlist-card">
+                                        <a href="OurProducts/<?php echo str_replace(' ', '', $name); ?>.php">
+                                            <img src="https://robohash.org/<?php echo rand(100, 999); ?>" class="home-prodlist-imgi">
+                                            <div class="home-prodlist-overlay">
+                                                <h4><?php echo $name; ?></h4>
+                                                <p>Explore <?php echo $name; ?></p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </li>
+                            <?php } ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>
