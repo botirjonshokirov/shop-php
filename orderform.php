@@ -159,7 +159,7 @@ if (isset($_POST['order'])) {
 									echo '<h3 style="color:black;font-size:25px;">Quantity:</h3>';
 									echo '<span style="color:#34ce6c;font-size:25px;">' . $quan . '</span>';
 
-									echo '<h3 style="color:#169E8F;font-size:45px;">Total: Php ' . $quan * $price . ' Php</h2>';
+									echo '<h3 style="color:#169E8F;font-size:45px;">Total: ' . $quan * $price . ' Php</h2>';
 								} else {
 									echo '
 											<div class="signupform_text"></div>
@@ -208,23 +208,24 @@ if (isset($_POST['order'])) {
 						<div>
 							<?php
 							echo '
-									<ul style="float: left;">
-										<li style="float: left; padding: 0px 25px 25px 25px;">
-											<div class="home-prodlist-img">
-												<a href="' . $category . '/view_product.php?pid=' . $id . '">
-													<img src="image/product/' . $item . '/' . $picture . '" class="home-prodlist-imgi">
-												</a>
-												<div style="text-align: center; padding: 0 0 6px 0;">
-													<span style="font-size: 15px;">' . $pName . '</span><br>
-													Price: ' . $price . ' Php
-												</div>
-											</div>
-										</li>
-									</ul>
-								';
+            <ul style="float: left;">
+                <li style="float: left; padding: 0px 25px 25px 25px;">
+                    <div class="home-prodlist-img">
+                        <a href="' . $category . '/view_product.php?pid=' . $id . '">
+                            <img src="https://robohash.org/' . $id . '" class="home-prodlist-imgi">
+                        </a>
+                        <div style="text-align: center; padding: 0 0 6px 0;">
+                            <span style="font-size: 15px;">' . $pName . '</span><br>
+                            Price: ' . $price . ' Php
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        ';
 							?>
 						</div>
 					</div>
+
 				</div>
 			</div>
 		</div>

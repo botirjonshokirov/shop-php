@@ -36,11 +36,10 @@ if (!isset($_SESSION['user_login'])) {
 					$pName = $row['pName'];
 					$price = $row['price'];
 					$description = $row['description'];
-					$photoName = $row['picture']; // Assuming the column name in the database is 'picture'
-					$photoNumber = preg_replace('/[^0-9]/', '', $photoName); // Extracting the number from the photo name
+					$photoName = $row['picture'];
 
 					// Generating the RoboHash image URL
-					$imageUrl = "https://robohash.org/" . $photoNumber;
+					$imageUrl = "https://robohash.org/" . $id;
 
 					echo '
 						<div class="col-md-4">
