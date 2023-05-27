@@ -117,7 +117,7 @@ $search_value = "";
 <html>
 
 <head>
-	<title>Welcome to ebuybd online shop</title>
+	<title>RoboHash</title>
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 

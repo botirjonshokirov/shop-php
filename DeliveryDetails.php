@@ -45,116 +45,78 @@ $search_value = "";
 <head>
 	<title>RoboHash</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body style="background-image: url(image/homebackgrndimg1.jpg);">
-	<div class="homepageheader">
-		<div class="signinButton loginButton">
-			<div class="uiloginbutton signinButton loginButton" style="margin-right: 40px;">
-				<?php
-				if ($user != "") {
-					echo '<a style="text-decoration: none; color: #fff;" href="logout.php">LOG OUT</a>';
-				} else {
-					echo '<a style="text-decoration: none; color: #fff;" href="signin.php">SIGN IN</a>';
-				}
-				?>
+<body>
+	<?php include("./components/min-navbar.php") ?>
 
-			</div>
-			<div class="uiloginbutton signinButton loginButton" style="">
-				<?php
-				if ($user != "") {
-					echo '<a style="text-decoration: none; color: #fff;" href="profile.php?uid=' . $user . '">Hi ' . $uname_db . '</a>';
-				} else {
-					echo '<a style="text-decoration: none; color: #fff;" href="login.php">LOG IN</a>';
-				}
-				?>
-			</div>
-		</div>
-		<div style="float: left; margin: 5px 0px 0px 23px;">
-			<a href="index.php">
-				<img style=" height: 75px; width: 130px;" src="image/cart.png">
-			</a>
-		</div>
-		<div id="srcheader">
-			<form id="newsearch" method="get" action="search.php">
-				<?php
-				echo '<input type="text" class="srctextinput" name="keywords" size="21" maxlength="120"  placeholder="Search Here..." value="' . $search_value . '"><input type="submit" value="search" class="srcbutton" >';
-				?>
-			</form>
-			<div class="srcclear"></div>
-		</div>
-	</div>
-	<div class="categolis">
-		<table>
-			<tr>
-				<th><?php echo '<a href="mycart.php?uid=' . $user . '" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">My Cart</a>'; ?></th>
-				<th>
-					<?php echo '<a href="profile.php?uid=' . $user . '" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #fff;border-radius: 12px;">My Orders</a>'; ?>
-				</th>
-				<th>
-					<?php echo '<a href="#" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">MyDeliveryHistory</a>'; ?>
-				</th>
-				<th><?php echo '<a href="settings.php?uid=' . $user . '" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #fff;border-radius: 12px;">Settings</a>'; ?></th>
+	<?php include("./components/user-categorylist.php") ?>
 
+	<div class="container" style="margin-top: 20px;">
+		<div class="card" style="width: 900px; margin: 0 auto;">
+			<div class="card-body">
+				<h4 class="card-title">Product List</h4>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr style="font-weight: bold;" bgcolor="#3A5487">
+								<th>Product Name</th>
+								<th>Price</th>
+								<th>Quantity</th>
+								<th>Description</th>
+								<th>Image</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+							include("inc/connect.inc.php");
+							$query = "SELECT * FROM cart WHERE uid='$user' ORDER BY id DESC";
+							$run = mysqli_query($con, $query);
+							while ($row = mysqli_fetch_assoc($run)) {
+								$pid = $row['pid'];
+								$quantity = $row['quantity'];
 
-			</tr>
-		</table>
-	</div>
-	<div style="margin-top: 20px;">
-		<div style="width: 900px; margin: 0 auto;">
-
-			<ul>
-				<li style=" background-color: #fff;">
-					<div>
-						<div>
-							<table class="rightsidemenu">
-								<tr style="font-weight: bold;" colspan="10" bgcolor="#3A5487">
-									<th>Product Name</th>
-									<th>Delivery Date</th>
-
-
-								</tr>
+								// Get product info
+								$query1 = "SELECT * FROM products WHERE id='$pid'";
+								$run1 = mysqli_query($con, $query1);
+								$row1 = mysqli_fetch_assoc($run1);
+								$pId = $row1['id'];
+								$pName = substr($row1['pName'], 0, 50);
+								$price = $row1['price'];
+								$description = $row1['description'];
+								$picture = $row1['picture'];
+								$item = $row1['item'];
+								$category = $row1['category'];
+							?>
 								<tr>
-									<?php include("inc/connect.inc.php");
-									$query = "SELECT * FROM cart WHERE uid='$user' ORDER BY id DESC";
-									$run = mysqli_query($con, $query);
-									while ($row = mysqli_fetch_assoc($run)) {
-										$pid = $row['pid'];
-										$quantity = $row['quantity'];
-
-										//get product info
-										$query1 = "SELECT * FROM products WHERE id='$pid'";
-										$run1 = mysqli_query($con, $query1);
-										$row1 = mysqli_fetch_assoc($run1);
-										$pId = $row1['id'];
-										$pName = substr($row1['pName'], 0, 50);
-										$price = $row1['price'];
-										$description = $row1['description'];
-										$picture = $row1['picture'];
-										$item = $row1['item'];
-										$category = $row1['category'];
-									?>
-										<th><?php echo $pName; ?></th>
-										<th><?php echo $price; ?></th>
-										<th><?php echo $quantity; ?></th>
-										<th><?php echo $description; ?></th>
-										<th><?php echo '<div class="home-prodlist-img"><a href="' . $category . '/view_product.php?pid=' . $pId . '">
-													<img src="image/product/' . $item . '/' . $picture . '" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
-													</a>
-												</div>' ?></th>
-										<th><?php echo '<div class="home-prodlist-img"><a href="delete_cart.php?cid=' . $pId . '" style="text-decoration: none;">X</a>
-												</div>' ?></th>
+									<td><?php echo $pName; ?></td>
+									<td><?php echo $price; ?></td>
+									<td><?php echo $quantity; ?></td>
+									<td><?php echo $description; ?></td>
+									<td>
+										<div class="home-prodlist-img">
+											<a href="<?php echo $category . '/view_product.php?pid=' . $pId; ?>">
+												<img src="image/product/<?php echo $item . '/' . $picture; ?>" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
+											</a>
+										</div>
+									</td>
+									<td>
+										<div class="home-prodlist-img">
+											<a href="delete_cart.php?cid=<?php echo $pId; ?>" style="text-decoration: none;">X</a>
+										</div>
+									</td>
 								</tr>
 							<?php } ?>
-							</table>
-						</div>
-					</div>
-				</li>
-
-			</ul>
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
+
 
 
 </body>
