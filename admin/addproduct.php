@@ -73,6 +73,10 @@ $search_value = "";
 </head>
 
 <body>
+	<?php include("./components/admin-navbar.php") ?>
+
+	<?php include("./components/category-list.php") ?>
+
 	<div class="container">
 		<h2>Add Product Form</h2>
 		<form action="" method="POST">
@@ -80,13 +84,15 @@ $search_value = "";
 				<label for="pname">Product Name:</label>
 				<input type="text" class="form-control" id="pname" name="pname" value="<?php echo $pname; ?>" required>
 			</div>
-			<div class="form-group">
-				<label for="price">Price:</label>
-				<input type="text" class="form-control" id="price" name="price" value="<?php echo $price; ?>" required>
-			</div>
-			<div class="form-group">
-				<label for="piece">Piece(unit):</label>
-				<input type="text" class="form-control" id="piece" name="piece" value="<?php echo $piece; ?>" required>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="price">Price:</label>
+					<input type="text" class="form-control" id="price" name="price" value="<?php echo $price; ?>" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="piece">Piece (unit):</label>
+					<input type="text" class="form-control" id="piece" name="piece" value="<?php echo $piece; ?>" required>
+				</div>
 			</div>
 			<div class="form-group">
 				<label for="available">Available:</label>
@@ -94,7 +100,7 @@ $search_value = "";
 			</div>
 			<div class="form-group">
 				<label for="descri">Description:</label>
-				<input type="text" class="form-control" id="descri" name="descri" value="<?php echo $descri; ?>" required>
+				<textarea class="form-control" id="descri" name="descri" required><?php echo $descri; ?></textarea>
 			</div>
 			<div class="form-group">
 				<label for="type">Type:</label>
@@ -103,28 +109,32 @@ $search_value = "";
 			<div class="form-group">
 				<label for="item">Item:</label>
 				<select class="form-control" id="item" name="item" required>
-					<option value="noodles" selected>Noodles/Canned</option>
-					<option value="seasoning">Condiments</option>
-					<option value="drink">Drinks</option>
-					<option value="soap">Soap/Detergents</option>
-					<option value="sweet">Sweets</option>
-					<option value="snack">Snacks</option>
-					<option value="shampoo">Shampoo</option>
-					<option value="hygiene">Hygiene</option>
+					<option value="Bolttron">Bolttron</option>
+					<option value="Nexus Prime">Nexus Prime</option>
+					<option value="Sparklebot">Sparklebot</option>
+					<option value="TurboX">TurboX</option>
+					<option value="RoboRover">RoboRover</option>
+					<option value="ElectraTech">ElectraTech</option>
+					<option value="AstroByte">AstroByte</option>
+					<option value="DynaBot">DynaBot</option>
 				</select>
+
 			</div>
-			<div class="form-group">
-				<label for="code">Product Code:</label>
-				<input type="text" class="form-control" id="code" name="code" value="<?php echo $pCode; ?>" required>
-			</div>
-			<div class="form-group">
-				<label for="picture">Picture Code:</label>
-				<input type="text" class="form-control" id="picture" name="picture" value="<?php echo $picture; ?>" required>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="code">Product Code:</label>
+					<input type="text" class="form-control" id="code" name="code" value="<?php echo $pCode; ?>" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="picture">Picture Code:</label>
+					<input type="text" class="form-control" id="picture" name="picture" value="<?php echo $picture; ?>" required>
+				</div>
 			</div>
 			<button type="submit" class="btn btn-primary" name="signup">Add Product</button>
 			<span class="error-message"><?php echo $error_message; ?></span>
 		</form>
 	</div>
+
 </body>
 
 </html>
