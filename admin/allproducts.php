@@ -22,7 +22,7 @@ $search_value = "";
 <html>
 
 <head>
-	<title>Welcome to ebuybd online shop</title>
+	<title>RoboHash</title>
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
