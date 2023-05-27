@@ -35,11 +35,8 @@ if (isset($_POST['signup'])) {
 	$pCode = $_POST['code'];
 	$descri = $_POST['descri'];
 
-	// Store picture code from robohash
-	$picture = $_POST['picture'];
-
 	// Store the product in the database
-	$result = mysqli_query($con, "INSERT INTO products(pName, price, piece, description, available, category, type, item, pCode, picture) VALUES ('$pname', '$price', '$piece', '$descri', '$available', '$category', '$type', '$item', '$pCode', '$picture')");
+	$result = mysqli_query($con, "INSERT INTO products(pName, price, piece, description, available, category, type, item, pCode) VALUES ('$pname', '$price', '$piece', '$descri', '$available', '$category', '$type', '$item', '$pCode')");
 
 	if ($result) {
 		header("Location: allproducts.php");
@@ -104,7 +101,7 @@ $search_value = "";
 			</div>
 			<div class="form-group">
 				<label for="type">Type:</label>
-				<input type="text" class="form-control" id="type" name="type" value="<?php echo $type; ?>" required>
+				<input type="text" class="form-control" id="type" name="type" value="<?php echo $type; ?>">
 			</div>
 			<div class="form-group">
 				<label for="item">Item:</label>
@@ -118,23 +115,15 @@ $search_value = "";
 					<option value="AstroByte">AstroByte</option>
 					<option value="DynaBot">DynaBot</option>
 				</select>
-
 			</div>
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					<label for="code">Product Code:</label>
-					<input type="text" class="form-control" id="code" name="code" value="<?php echo $pCode; ?>" required>
-				</div>
-				<div class="form-group col-md-6">
-					<label for="picture">Picture Code:</label>
-					<input type="text" class="form-control" id="picture" name="picture" value="<?php echo $picture; ?>" required>
-				</div>
+			<div class="form-group">
+				<label for="code">Product Code:</label>
+				<input type="text" class="form-control" id="code" name="code" value="<?php echo $pCode; ?>" required>
 			</div>
 			<button type="submit" class="btn btn-primary" name="signup">Add Product</button>
 			<span class="error-message"><?php echo $error_message; ?></span>
 		</form>
 	</div>
-
 </body>
 
 </html>

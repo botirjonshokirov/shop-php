@@ -29,7 +29,7 @@ if (!isset($_SESSION['user_login'])) {
 	<div class="container">
 		<div class="row">
 			<?php
-			$getposts = mysqli_query($con, "SELECT * FROM products WHERE available >= '1' AND item = 'soap' ORDER BY id DESC LIMIT 10") or die(mysqli_error($con));
+			$getposts = mysqli_query($con, "SELECT * FROM products WHERE available >= '1' AND item = 'AstroByte' ORDER BY id DESC LIMIT 10") or die(mysqli_error($con));
 			if (mysqli_num_rows($getposts)) {
 				while ($row = mysqli_fetch_assoc($getposts)) {
 					$id = $row['id'];

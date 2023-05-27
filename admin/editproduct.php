@@ -166,7 +166,7 @@ $search_value = "";
 					</div>
 					<div class="form-group">
 						<label for="type">Type:</label>
-						<select class="form-control" id="type" name="type" required>
+						<select class="form-control" id="type" name="type">
 							<option value="<?php echo $type; ?>" selected><?php echo $typeu; ?></option>
 							<option value="clothing">Clothing</option>
 							<option value="other">Other</option>
@@ -214,22 +214,6 @@ $search_value = "";
 							echo '<img src=https://robohash.org/' . $id . '" class="home-prodlist-imgi">';
 							?>
 						</div>
-					</li>
-					<li>
-						<form action="" method="POST" class="registration" enctype="multipart/form-data">
-							<div class="form-group">
-								<label for="profilepic">Add Picture:</label>
-								<input type="file" class="form-control-file" id="profilepic" name="profilepic">
-							</div>
-							<button type="submit" class="btn btn-primary" name="updatepic">Change Picture</button>
-							<div class="signup_error_msg">
-								<?php
-								if (isset($error_message)) {
-									echo $error_message;
-								}
-								?>
-							</div>
-						</form>
 					</li>
 				</ul>
 			</div>
