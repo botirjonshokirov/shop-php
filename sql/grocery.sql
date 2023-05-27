@@ -1,11 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.7.4
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Oct 16, 2018 at 04:26 PM
--- Server version: 10.1.28-MariaDB
--- PHP Version: 5.6.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -13,10 +5,6 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `grocery`
@@ -119,34 +107,51 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `pName`, `price`, `piece`, `description`, `available`, `category`, `type`, `item`, `pCode`, `picture`) VALUES
-(77, 'Mega Sardines 155g set of 8pcs', 172, 8, 'Mega in tomato sauce w chili', 100, '', '', 'noodles', 'aa', '1539174914.png'),
-(78, 'Argentina corned beef 260g set of  6pcs', 450, 6, 'Package foods from century', 100, '', '', 'noodles', 'bb', '1539176648.jpg'),
-(79, 'Argentina Meatloaf 250g set of 6pcs', 350, 6, '250g set of 6', 100, '', '', 'noodles', 'cc', '1539176787.jpg'),
-(80, 'Argentina Fiesta Sausage 175g 5pcs', 155, 5, '175g set of 5pcs', 100, '', '', 'noodles', 'dd', '1539176959.jpg'),
-(81, 'Pork Maling luncheon 340g (2pcs)', 258, 2, '340g (2pcs)', 100, '', '', 'noodles', 'ee', '1539177153.jpg'),
-(82, 'blueyellow-ligo-gata-style-sardines-155g-4pcs', 110, 4, '155g (set of 4pcs)', 100, '', '', 'noodles', 'ff', '1539177279.jpg'),
-(83, 'Magic Sarap 4packs', 185, 4, '8g set of 4', 100, '', '', 'seasoning', 'qq', '1539232659.PNG'),
-(84, 'Coke Mismo 300ml set of 24 pcs', 290, 24, '300 ml 24pcs', 100, '', '', 'drink', 'qwe', '1539403731.PNG'),
-(85, 'Sprite Mismo 250ml 24pcs', 300, 24, '250ml 24pcs', 100, '', '', 'drink', 'qwer', '1539403840.PNG'),
-(86, 'Kopiko Blanca Cream 30g set of 2', 160, 2, '30g set of 2packs', 100, '', '', 'drink', 'qwrt', '1539404335.jpg'),
-(87, 'Milo 22g set of 2packs', 160, 24, '22g 2packs/24pcs', 100, '', '', 'drink', 'ryrty', '1539404929.jpg'),
-(88, 'Coke 1.5L  5bottles', 290, 5, 'coke 1.5L 5B', 100, '', '', 'drink', 'mnb', '1539405194.jpg'),
-(90, 'Wilkins 330ml    30bottles', 238, 30, '330ml /   30 bottles', 100, '', '', 'drink', 'ads', '1539405937.jpg'),
-(91, 'Graham Crackers 200g 4set', 165, 4, '200g/4sets', 100, '', 'other', 'snack', 'asdaa', '1539447093.PNG'),
-(92, 'MagicCreamsChoco 308g 5set', 320, 5, '308g/set of 5/11 packs', 100, '', 'other', 'snack', 'adf', '1539447263.PNG'),
-(93, 'Nissin Butter 10gx12 3sets', 100, 3, '10g /     12packs      /3sets', 100, '', '', 'snack', 'gfhjgj', '1539447833.PNG'),
-(94, 'Otap Bacolod sp 200g', 180, 1, '200g', 100, '', '', 'snack', 'lkfjd', '1539447955.PNG'),
-(95, 'Presto Creams PeanutB 10packs/3sets', 190, 3, '10packs/3sets', 100, '', '', 'snack', 'lk', '1539448126.PNG'),
-(96, 'gummy colas  4sets', 100, 4, 'gummy 4s', 100, '', '', 'sweet', 'po', '1539448238.PNG'),
-(97, 'kitkat 4s', 110, 4, 'kitkat bars', 100, '', '', 'sweet', 'n', '1539448317.PNG'),
-(98, 'Mr. mais sweet corn candy 106g 4s', 100, 4, '106g /4sets', 100, '', '', 'sweet', 'b', '1539448500.PNG'),
-(99, 'Palmolive silky  12ml+conditioner 10ml/24s', 200, 24, 'shampoo12ml+conditioner10ml', 100, '', 'other', 'shampoo', 'r', '1539448680.PNG'),
-(100, 'Palmolive shampoo aroma-vitality 13.5ml 48s', 270, 48, '13.5ml/48sets', 100, '', '', 'shampoo', 'v', '1539448775.PNG'),
-(101, 'Palmolive shampoo antiDandruff 13.5ml 48s', 270, 100, '13.5ml/48sets', 100, '', '', 'shampoo', 'e', '1539448866.PNG'),
-(102, 'joy dishwashing liquid 255ml 3sets', 400, 3, '255ml 3sets', 100, '', '', 'soap', 'a', '1539660576.PNG'),
-(103, 'dove bar soap 3sets 100g', 220, 3, '3sets 100g', 100, '', '', 'soap', 'nl', '1539660980.PNG'),
-(104, 'Bioderm soap 7sets 135g', 300, 7, '7sets 135g', 100, '', '', 'soap', 'ewr', '1539661097.PNG');
+INSERT INTO `products` (`id`, `pName`, `price`, `piece`, `description`, `available`, `category`, `type`, `item`, `pCode`)
+VALUES
+(77, 'Product 1', 172, 8, 'Description for Product 1', 100, '', '', 'Bolttron', 'aa'),
+(78, 'Product 2', 450, 6, 'Description for Product 2', 100, '', '', 'Sparklebot', 'bb'),
+(79, 'Product 3', 350, 6, 'Description for Product 3', 100, '','', 'Bolttron', 'cc'),
+(80, 'Product 4', 155, 5, 'Description for Product 4', 100, '','', 'Sparklebot', 'dd'),
+(81, 'Product 5', 258, 2, 'Description for Product 5', 100, '','', 'Bolttron', 'ee'),
+(82, 'Product 6', 110, 4, 'Description for Product 6', 100, '','', 'Sparklebot', 'ff'),
+(83, 'Product 7', 185, 4, 'Description for Product 7', 100, '','', 'Bolttron',  'qq'),
+(84, 'Product 8', 290, 24, 'Description for Product 8', 100, '','', 'Sparklebot', 'qwe'),
+(85, 'Product 9', 300, 24, 'Description for Product 9', 100, '','', 'Bolttron', 'qwer'),
+(86, 'Product 10', 160, 2, 'Description for Product 10', 100, '','', 'Sparklebot', 'qwrt'),
+(87, 'Product 11', 160, 24, 'Description for Product 11', 100, '','', 'Bolttron', 'ryrty'),
+(88, 'Product 12', 290, 5, 'Description for Product 12', 100, '','', 'Sparklebot', 'mnb'),
+(90, 'Product 13', 238, 30, 'Description for Product 13', 100, '','', 'Bolttron', 'ads'),
+(91, 'Product 14', 165, 4, 'Description for Product 14', 100, '','', 'Sparklebot',  'asdaa'),
+(92, 'Product 15', 320, 5, 'Description for Product 15', 100, '','', 'Bolttron',  'adf'),
+(93, 'Product 16', 100, 3, 'Description for Product 16', 100, '','', 'Sparklebot',  'gfhjgj'),
+(94, 'Product 17', 180, 1, 'Description for Product 17', 100, '','', 'Bolttron',  'lkfjd'),
+(95, 'Product 18', 190, 3, 'Description for Product 18', 100, '','', 'Sparklebot',  'lk'),
+(96, 'Product 19', 100, 4, 'Description for Product 19', 100, '','', 'Bolttron', 'po'),
+(97, 'Product 20', 110, 4, 'Description for Product 20', 100, '','', 'Sparklebot', 'n'),
+(121, 'Product 21', 200, 8, 'Description for Product 21', 100, '', '', 'RoboRover', 'qwe'),
+(122, 'Product 22', 150, 12, 'Description for Product 22', 100, '', '', 'ElectraTech', 'qwer'),
+(123, 'Product 23', 180, 6, 'Description for Product 23', 100, '', '', 'AstroByte', 'qwrt'),
+(124, 'Product 24', 250, 10, 'Description for Product 24', 100, '', '', 'DynaBot', 'ryrty'),
+(125, 'Product 25', 300, 4, 'Description for Product 25', 100, '', '', 'Bolttron', 'mnb'),
+(126, 'Product 26', 220, 24, 'Description for Product 26', 100, '', '', 'NexusPrime', 'ads'),
+(127, 'Product 27', 320, 5, 'Description for Product 27', 100, '', 'other', 'Sparklebot', 'asdaa'),
+(128, 'Product 28', 190, 3, 'Description for Product 28', 100, '', 'other', 'TurboX', 'adf'),
+(129, 'Product 29', 110, 4, 'Description for Product 29', 100, '', '', 'RoboRover', 'gfhjgj'),
+(130, 'Product 30', 160, 2, 'Description for Product 30', 100, '', '', 'ElectraTech', 'lkfjd'),
+(131, 'Product 31', 180, 8, 'Description for Product 31', 100, '', '', 'AstroByte', 'lk'),
+(132, 'Product 32', 250, 6, 'Description for Product 32', 100, '', '', 'DynaBot', 'n'),
+(133, 'Product 33', 300, 4, 'Description for Product 33', 100, '', '', 'Bolttron', 'b'),
+(134, 'Product 34', 220, 12, 'Description for Product 34', 100, '', '', 'NexusPrime', 'r'),
+(135, 'Product 35', 320, 10, 'Description for Product 35', 100, '', '', 'Sparklebot', 'v'),
+(136, 'Product 36', 190, 5, 'Description for Product 36', 100, '', 'other', 'TurboX', 'e'),
+(137, 'Product 37', 110, 4, 'Description for Product 37', 100, '', '', 'RoboRover', 'a'),
+(138, 'Product 38', 160, 24, 'Description for Product 38', 100, '', '', 'ElectraTech', 'nl'),
+(139, 'Product 39', 200, 3, 'Description for Product 39', 100, '', '', 'AstroByte', 'ewr'),
+(140, 'Product 40', 270, 48, 'Description for Product 40', 100, '', '', 'DynaBot', 'qwrt');
+
+
+
 
 -- --------------------------------------------------------
 
