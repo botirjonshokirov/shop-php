@@ -13,14 +13,15 @@ if (!isset($_SESSION['user_login'])) {
 ?>
 <?php
 $categoryNames = array(
-    'Robo Noodles',
-    'Robo Snacks',
-    'Robo Sweets',
-    'Robo Hygiene',
-    'Robo Shampoo',
-    'Robo Soap & Detergent',
-    'Robo Drinks',
-    'Robo Seasonings'
+    'Bolttron',
+    'Nexus Prime',
+    'Sparklebot',
+    'TurboX',
+    'RoboRover',
+    'ElectraTech',
+    'AstroByte',
+    'DynaBot'
+
 );
 
 shuffle($categoryNames);
@@ -45,18 +46,6 @@ shuffle($categoryNames);
 
         <?php include("./components/navbar.php"); ?>
 
-        <div class="row">
-            <div class="col-12">
-                <div class="search-bar">
-                    <form id="search-form" method="get" action="search.php" class="d-flex justify-content-center">
-                        <div class="input-group">
-                            <input type="text" class="form-control search-input" name="keywords" placeholder="Search Here...">
-                            <button type="submit" class="btn btn-primary search-button"><i class="fas fa-search"></i></button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="container">
         <div class="row">

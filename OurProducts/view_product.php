@@ -1,46 +1,45 @@
-<?php include ( "../inc/connect.inc.php" ); ?>
-<?php 
+<?php include("../inc/connect.inc.php"); ?>
+<?php
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
 	$user = "";
-}
-else {
+} else {
 	$user = $_SESSION['user_login'];
 	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-		$get_user_email = mysqli_fetch_assoc($result);
-			$uname_db = $get_user_email['firstName'];
+	$get_user_email = mysqli_fetch_assoc($result);
+	$uname_db = $get_user_email['firstName'];
 }
 if (isset($_REQUEST['pid'])) {
-	
+
 	$pid = mysqli_real_escape_string($con, $_REQUEST['pid']);
-}else {
+} else {
 	header('location: index.php');
 }
 
 
 $getposts = mysqli_query($con, "SELECT * FROM products WHERE id ='$pid'") or die(mysqlI_error($con));
-					if (mysqli_num_rows($getposts)) {
-						$row = mysqli_fetch_assoc($getposts);
-						$id = $row['id'];
-						$pName = $row['pName'];
-						$price = $row['price'];
-						$piece=$row['piece'];
-						$description = $row['description'];
-						$picture = $row['picture'];
-						$item = $row['item'];
-						$available =$row['available'];
-					}	
+if (mysqli_num_rows($getposts)) {
+	$row = mysqli_fetch_assoc($getposts);
+	$id = $row['id'];
+	$pName = $row['pName'];
+	$price = $row['price'];
+	$piece = $row['piece'];
+	$description = $row['description'];
+	$picture = $row['picture'];
+	$item = $row['item'];
+	$available = $row['available'];
+}
 
 
 if (isset($_POST['addcart'])) {
 	$getposts = mysqli_query($con, "SELECT * FROM cart WHERE pid ='$pid' AND uid='$user'") or die(mysqlI_error($con));
 	if (mysqli_num_rows($getposts)) {
-		header('location: ../mycart.php?uid='.$user.'');
-	}else{
-		if(mysqli_query($con, "INSERT INTO cart (uid,pid,quantity) VALUES ('$user','$pid', 1)")){
-			header('location: ../mycart.php?uid='.$user.'');
-		}else{
+		header('location: ../mycart.php?uid=' . $user . '');
+	} else {
+		if (mysqli_query($con, "INSERT INTO cart (uid,pid,quantity) VALUES ('$user','$pid', 1)")) {
+			header('location: ../mycart.php?uid=' . $user . '');
+		} else {
 			header('location: index.php');
 		}
 	}
@@ -49,67 +48,48 @@ if (isset($_POST['addcart'])) {
 
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>View-Prod</title>
-	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+
 <body>
-	<?php include ( "../inc/mainheader.inc.php" ); ?>
-	<div class="categolis">
-		<table>
-			<tr>
-				<th>
-					<a href="NoodlesCanned.php" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">Noodles&Canned</a>
-				</th>
-				<th><a href="Seasonings.php" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">Seasonings</a></th>
-				<th><a href="Drinks.php" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">Drinkss</a></th>
-				<th><a href="Snacks.php" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">Snacks</a></th>
-				<th><a href="Sweets.php" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">Sweets</a></th>
-				<th><a href="Soap&Detergent.php" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">Soap&Detergent</a></th>
-				<th><a href="Shampoo.php" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">Shampoo</a></th>
-				<th><a href="Hygene.php" style="text-decoration: none;color: #040403;padding: 4px 12px;background-color: #e6b7b8;border-radius: 12px;">Hygiene</a></th>
-			</tr>
-		</table>
-	</div>
-	<div style="margin: 0 97px; padding: 10px">
+	<?php include("../components/navbar.php"); ?>
+	<div class="container">
 
-		<?php 
-			echo '
-				<div style="float: left;">
+		<div class="row mt-4">
+			<div class="col-md-6">
 				<div>
-					<img src="../image/product/'.$item.'/'.$picture.'" style="height: 500px; width: 500px; padding: 2px; border: 2px solid #c7587e;">
+					<img src="https://robohash.org/<?php echo $pid; ?>" style="height: 500px; width: 500px; padding: 2px; border: 2px solid #c7587e;">
 				</div>
-				</div>
-				<div style="float: right;width: 40%;color: #067165;background-color: #ddd;padding: 10px;">
-					<div style="">
-						<h3 style="font-size: 25px; font-weight: bold; ">'.$pName.'</h3><hr>
-						<h3 style="padding: 20px 0 0 0; font-size: 20px;">Price: '.$price.'Php</h3><hr>
-						<h3 style="padding: 20px 0 0 0; font-size: 22px; ">Pieces:'.$piece.'</h3>
-						<h3 style="padding: 20px 0 0 0; font-size: 22px; ">Description:</h3>
-						<p>
-							'.$description.'
-						</p>
-
+			</div>
+			<div class="col-md-6">
+				<div class="card p-4">
+					<h3 class="font-weight-bold"><?php echo $pName; ?></h3>
+					<hr>
+					<h4>Price: <?php echo $price; ?>Php</h4>
+					<hr>
+					<h4>Pieces: <?php echo $piece; ?></h4>
+					<h4>Description:</h4>
+					<p><?php echo $description; ?></p>
+					<div class="mt-4">
+						<h4>Want to buy this product?</h4>
 						<div>
-							<h3 style="padding: 20px 0 5px 0; font-size: 20px;">Want to buy this product? </h3>
-							<div id="srcheader">
-								<form id="" method="post" action="">
-								        <input type="submit" name="addcart" value="Add to cart" class="srcbutton" >
-								</form><br/>
-								<form id="" method="post" action="../orderform.php?poid='.$pid.'">
-								        <input type="submit" value="Order Now" class="srcbutton" >
-								</form>
-								<div class="srcclear"></div>
-							</div>
+							<form method="post" action="">
+								<input type="submit" name="addcart" value="Add to cart" class="btn btn-success">
+							</form>
+							<br>
+							<form method="post" action="../orderform.php?poid=<?php echo $pid; ?>">
+								<input type="submit" value="Order Now" class="btn btn-primary">
+							</form>
 						</div>
-
 					</div>
 				</div>
-
-			';
-		?>
-
+			</div>
+		</div>
 	</div>
 </body>
+
 </html>
