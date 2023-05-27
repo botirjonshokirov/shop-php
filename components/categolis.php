@@ -4,14 +4,14 @@
       <?php
       // Define an array of category links
       $categories = array(
-        "RoboNoodles.php" => "Noodles & Canned",
-        "RoboSeasonings.php" => "Seasonings",
-        "RoboDrinks.php" => "Drinks",
-        "RoboSnacks.php" => "Snacks",
-        "RoboSweets.php" => "Sweets",
-        "RoboSoap&Detergent.php" => "Soap & Detergent",
-        "RoboShampoo.php" => "Shampoo",
-        "RoboHygiene.php" => "Hygiene"
+        "AstroByte.php" => "AstroByte",
+        "Bolttron.php" => "Bolttron",
+        "DynaBot.php" => "DynaBot",
+        "ElectraTech.php" => "ElectraTech",
+        "NexusPrime.php" => "NexusPrime",
+        "RoboRover.php" => "RoboRover",
+        "Sparklebot.php" => "Sparklebot",
+        "TurboX.php" => "TurboX"
       );
 
       // Loop through the categories and generate the navigation links

@@ -97,3 +97,22 @@ body {
   margin-bottom: 10px;
   text-transform: uppercase;
 }
+
+.custom-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  text-decoration: none;
+  background-color: #e6b7b8;
+  color: #040403;
+  border-radius: 12px;
+}
+
+.custom-button.btn-light {
+  background-color: #fff;
+  color: #040403;
+}
+
+.custom-button.btn-primary {
+  background-color: #3a5487;
+  color: #fff;
+}

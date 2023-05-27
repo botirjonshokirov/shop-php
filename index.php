@@ -13,14 +13,14 @@ if (!isset($_SESSION['user_login'])) {
 ?>
 <?php
 $categoryNames = array(
-    'Robo Noodles',
-    'Robo Snacks',
-    'Robo Sweets',
-    'Robo Hygiene',
-    'Robo Shampoo',
-    'Robo Soap & Detergent',
-    'Robo Drinks',
-    'Robo Seasonings'
+    array('Bolttron', 1),
+    array('Nexus Prime', 2),
+    array('Sparklebot', 3),
+    array('TurboX', 4),
+    array('RoboRover', 5),
+    array('ElectraTech', 6),
+    array('AstroByte', 7),
+    array('DynaBot', 8)
 );
 
 shuffle($categoryNames);
@@ -36,39 +36,28 @@ shuffle($categoryNames);
     <title>Welcome to ROBO HASH Shop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
 
 </head>
 
 <body>
     <div class="container-fluid">
 
-        <?php include("./components/navbar.php"); ?>
+        <?php include("./components/min-navbar.php"); ?>
 
-        <div class="row">
-            <div class="col-12">
-                <div class="search-bar">
-                    <form id="search-form" method="get" action="search.php" class="d-flex justify-content-center">
-                        <div class="input-group">
-                            <input type="text" class="form-control search-input" name="keywords" placeholder="Search Here...">
-                            <button type="submit" class="btn btn-primary search-button"><i class="fas fa-search"></i></button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="home-welcome">
                     <div class="home-welcome-text">
-                        <div style="padding-top: 180px;">
+                        <div style="padding-top: 180px; padding-left: 20px;">
                             <div>
                                 <h1>ROBO HASH STORE</h1>
                                 <h2>You can buy any ROBO HASH photos</h2>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -81,14 +70,13 @@ shuffle($categoryNames);
                     </div>
                     <div class="d-flex justify-content-center">
                         <ul class="list-inline">
-                            <?php foreach ($categoryNames as $name) { ?>
+                            <?php foreach ($categoryNames as $category) { ?>
                                 <li class="list-inline-item">
                                     <div class="home-prodlist-card">
-                                        <a href="OurProducts/<?php echo str_replace(' ', '', $name); ?>.php">
-                                            <img src="https://robohash.org/<?php echo rand(100, 999); ?>" class="home-prodlist-imgi">
+                                        <a href="OurProducts/<?php echo str_replace(' ', '', $category[0]); ?>.php">
+                                            <img src="https://robohash.org/<?php echo $category[1]; ?>" class="home-prodlist-imgi">
                                             <div class="home-prodlist-overlay">
-                                                <h4><?php echo $name; ?></h4>
-                                                <p>Explore <?php echo $name; ?></p>
+                                                <h4><?php echo $category[0]; ?>
                                             </div>
                                         </a>
                                     </div>
@@ -96,6 +84,8 @@ shuffle($categoryNames);
                             <?php } ?>
                         </ul>
                     </div>
+
+
                 </div>
             </div>
         </div>
