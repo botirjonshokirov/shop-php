@@ -1,0 +1,26 @@
+.card-container {
+  height: 100%;
+}
+
+.card {
+  height: 100%;
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-text {
+  margin-bottom: 1rem;
+}
+
+.btn-primary {
+  width: 100%;
+}

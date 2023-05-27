@@ -17,7 +17,7 @@ if (!isset($_SESSION['user_login'])) {
 
 <head>
 	<title>DynaBot</title>
-	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="./style.css">
 	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -43,11 +43,12 @@ if (!isset($_SESSION['user_login'])) {
 					$imageUrl = "https://robohash.org/" . $photoNumber;
 
 					echo '
-						<div class="col-md-3">
-							<div class="card">
+						<div class="col-md-4">
+							<div class="card card-container">
 								<img src="' . $imageUrl . '" class="card-img-top">
 								<div class="card-body">
 									<h5 class="card-title">' . $pName . '</h5>
+									<p class="card-text">Description: ' . $description . ' </p>
 									<p class="card-text">Price: ' . $price . ' Php</p>
 									<a href="view_product.php?pid=' . $id . '" class="btn btn-primary">View</a>
 								</div>
