@@ -15,18 +15,22 @@
               </tr>
             </thead>
             <tbody>
-              <?php include("inc/connect.inc.php");
-              $query = "SELECT * FROM cart WHERE uid='$user' ORDER BY id DESC";
-              $run = mysqli_query($con, $query);
+              <?php
+              $query = "SELECT * FROM cart WHERE uid = :user ORDER BY id DESC";
+              $stmt = $pdo->prepare($query);
+              $stmt->bindValue(':user', $user, PDO::PARAM_INT);
+              $stmt->execute();
               $total = 0;
-              while ($row = mysqli_fetch_assoc($run)) {
+              while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $pid = $row['pid'];
                 $quantity = $row['quantity'];
 
                 // Get product info
-                $query1 = "SELECT * FROM products WHERE id='$pid'";
-                $run1 = mysqli_query($con, $query1);
-                $row1 = mysqli_fetch_assoc($run1);
+                $query1 = "SELECT * FROM products WHERE id = :pid";
+                $stmt1 = $pdo->prepare($query1);
+                $stmt1->bindValue(':pid', $pid, PDO::PARAM_INT);
+                $stmt1->execute();
+                $row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
                 $pId = $row1['id'];
                 $pName = substr($row1['pName'], 0, 50);
                 $price = $row1['price'];
