@@ -1,4 +1,3 @@
-<?php include("../inc/connect.inc.php"); ?>
 <?php
 ob_start();
 session_start();
@@ -6,21 +5,24 @@ if (!isset($_SESSION['user_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['user_login'];
-	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM user WHERE id=:user");
+	$stmt->bindParam(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 }
 if (isset($_REQUEST['pid'])) {
-
-	$pid = mysqli_real_escape_string($con, $_REQUEST['pid']);
+	$pid = $_REQUEST['pid'];
 } else {
 	header('location: index.php');
 }
 
-
-$getposts = mysqli_query($con, "SELECT * FROM products WHERE id ='$pid'") or die(mysqlI_error($con));
-if (mysqli_num_rows($getposts)) {
-	$row = mysqli_fetch_assoc($getposts);
+$stmt = $pdo->prepare("SELECT * FROM products WHERE id = :pid");
+$stmt->bindParam(':pid', $pid);
+$stmt->execute();
+$getposts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (count($getposts) > 0) {
+	$row = $getposts[0];
 	$id = $row['id'];
 	$pName = $row['pName'];
 	$price = $row['price'];
@@ -31,13 +33,19 @@ if (mysqli_num_rows($getposts)) {
 	$available = $row['available'];
 }
 
-
 if (isset($_POST['addcart'])) {
-	$getposts = mysqli_query($con, "SELECT * FROM cart WHERE pid ='$pid' AND uid='$user'") or die(mysqlI_error($con));
-	if (mysqli_num_rows($getposts)) {
+	$stmt = $pdo->prepare("SELECT * FROM cart WHERE pid = :pid AND uid = :user");
+	$stmt->bindParam(':pid', $pid);
+	$stmt->bindParam(':user', $user);
+	$stmt->execute();
+	$getposts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	if (count($getposts) > 0) {
 		header('location: ../mycart.php?uid=' . $user . '');
 	} else {
-		if (mysqli_query($con, "INSERT INTO cart (uid,pid,quantity) VALUES ('$user','$pid', 1)")) {
+		$stmt = $pdo->prepare("INSERT INTO cart (uid, pid, quantity) VALUES (:user, :pid, 1)");
+		$stmt->bindParam(':user', $user);
+		$stmt->bindParam(':pid', $pid);
+		if ($stmt->execute()) {
 			header('location: ../mycart.php?uid=' . $user . '');
 		} else {
 			header('location: index.php');
