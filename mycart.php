@@ -1,35 +1,43 @@
-<?php include("inc/connect.inc.php"); ?>
 <?php
+require_once "inc/connect.inc.php";
 
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
 	header("location: login.php");
+	exit;
 } else {
 	$user = $_SESSION['user_login'];
-	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$query = "SELECT * FROM user WHERE id=:user";
+	$stmt = $pdo->prepare($query);
+	$stmt->bindValue(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email != null ? $get_user_email['firstName'] : null;
 	$uemail_db = $get_user_email != null ? $get_user_email['email'] : null;
 	$ulast_db = $get_user_email != null ? $get_user_email['lastName'] : null;
-
 	$umob_db = $get_user_email != null ? $get_user_email['mobile'] : null;
 	$uadd_db = $get_user_email != null ? $get_user_email['address'] : null;
 }
 
 if (isset($_REQUEST['uid'])) {
-
-	$user2 = mysqli_real_escape_string($con, $_REQUEST['uid']);
+	$user2 = $_REQUEST['uid'];
 	if ($user != $user2) {
 		header('location: index.php');
+		exit;
 	}
 } else {
 	header('location: index.php');
+	exit;
 }
 
 if (isset($_REQUEST['cid'])) {
-	$cid = mysqli_real_escape_string($con, $_REQUEST['cid']);
-	if (mysqli_query($con, "DELETE FROM orders WHERE pid='$cid' AND uid='$user'")) {
+	$cid = $_REQUEST['cid'];
+	$query = "DELETE FROM orders WHERE pid=:cid AND uid=:user";
+	$stmt = $pdo->prepare($query);
+	$stmt->bindValue(':cid', $cid);
+	$stmt->bindValue(':user', $user);
+	if ($stmt->execute()) {
 		header('location: mycart.php?uid=' . $user . '');
 	} else {
 		header('location: index.php');
@@ -38,15 +46,13 @@ if (isset($_REQUEST['cid'])) {
 
 $search_value = "";
 
-
-//order
-
+// Order
 if (isset($_POST['order'])) {
-	//declere veriable
+	// Declare variables
 	$mbl = $_POST['mobile'];
 	$addr = $_POST['address'];
 	$del = $_POST['Delivery'];
-	//triming name
+
 	try {
 		if (empty($_POST['mobile'])) {
 			throw new Exception('Mobile can not be empty');
@@ -58,53 +64,51 @@ if (isset($_POST['order'])) {
 			throw new Exception('Type of Delivery can not be empty');
 		}
 
+		$d = date("Y-m-d"); // Year - Month - Day
 
-		// Check if email already exists
-
-
-		$d = date("Y-m-d"); //Year - Month - Day
-
-		// send email
-		$msg = "
-					
-						Your Order suc
-
-						
-						";
-		//if (@mail($uemail_db,"eBuyBD Product Order",$msg, "From:eBuyBD <no-reply@ebuybd.xyz>")) {
-		$result = mysqli_query($con, "SELECT * FROM cart WHERE uid='$user'");
-		$t = mysqli_num_rows($result);
+		$result = $pdo->query("SELECT * FROM cart WHERE uid='$user'");
+		$t = $result->rowCount();
 		if ($t <= 0) {
 			throw new Exception('No product in cart. Add product first.');
 		}
-		while ($get_p = mysqli_fetch_assoc($result)) {
+
+		$success_message = '';
+
+		while ($get_p = $result->fetch(PDO::FETCH_ASSOC)) {
 			$num = $get_p['quantity'];
 			$pid = $get_p['pid'];
 
-			mysqli_query($con, "INSERT INTO orders (uid,pid,quantity,oplace,mobile,odate,delivery) VALUES ('$user','$pid',$num,'$_POST[address]','$_POST[mobile]','$d','$del')");
-		}
+			$query = "INSERT INTO orders (uid, pid, quantity, oplace, mobile, odate, delivery) VALUES (:user, :pid, :num, :address, :mobile, :odate, :del)";
+			$stmt = $pdo->prepare($query);
+			$stmt->bindValue(':user', $user);
+			$stmt->bindValue(':pid', $pid);
+			$stmt->bindValue(':num', $num);
+			$stmt->bindValue(':address', $_POST['address']);
+			$stmt->bindValue(':mobile', $_POST['mobile']);
+			$stmt->bindValue(':odate', $d);
+			$stmt->bindValue(':del', $_POST['Delivery']);
 
-		if (mysqli_query($con, "DELETE FROM cart WHERE uid='$user'")) {
-
-			//success message
-
-			$success_message = '
-						<div class="signupform_content">
+			if ($stmt->execute()) {
+				$success_message = '
+					<div class="signupform_content">
 						<h2><font face="bookman"></font></h2>
-
 						<div class="signupform_text" style="font-size: 18px; text-align: center;">
-						<font face="bookman">
-
-						</font></div></div>
-						';
+							<font face="bookman">
+								Your Order successful.
+							</font>
+						</div>
+					</div>';
+			}
 		}
-		//}
 
+		$query = "DELETE FROM cart WHERE uid=:user";
+		$stmt = $pdo->prepare($query);
+		$stmt->bindValue(':user', $user);
+		$stmt->execute();
 	} catch (Exception $e) {
 		$error_message = $e->getMessage();
 	}
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -129,7 +133,6 @@ if (isset($_POST['order'])) {
 			<?php include("./components/user-loginform.php") ?>
 		</div>
 	</div>
-
 
 </body>
 

@@ -1,24 +1,22 @@
-<?php include("inc/connect.inc.php"); ?>
 <?php
-
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
 	header("location: login.php");
 } else {
 	$user = $_SESSION['user_login'];
-	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	include("inc/connect.inc.php");
+	$stmt = $con->prepare("SELECT * FROM user WHERE id = ?");
+	$stmt->execute([$user]);
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$uemail_db = $get_user_email['email'];
-
 	$umob_db = $get_user_email['mobile'];
 	$uadd_db = $get_user_email['address'];
 }
 
 if (isset($_REQUEST['uid'])) {
-
-	$user2 = mysqli_real_escape_string($con, $_REQUEST['uid']);
+	$user2 = $_REQUEST['uid'];
 	if ($user != $user2) {
 		header('location: index.php');
 	}
@@ -45,7 +43,6 @@ $search_value = "";
 	<div style="margin-top: 20px;">
 		<div class="container">
 			<ul class="list-group">
-
 				<li class="list-group-item">
 					<div>
 						<div>
@@ -63,10 +60,12 @@ $search_value = "";
 									</tr>
 								</thead>
 								<tbody>
-									<?php include("inc/connect.inc.php");
-									$query = "SELECT * FROM orders WHERE uid='$user' ORDER BY id DESC";
-									$run = mysqli_query($con, $query);
-									while ($row = mysqli_fetch_assoc($run)) {
+									<?php
+									include("inc/connect.inc.php");
+									$stmt = $con->prepare("SELECT * FROM orders WHERE uid = ? ORDER BY id DESC");
+									$stmt->execute([$user]);
+									$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+									foreach ($rows as $row) {
 										$pid = $row['pid'];
 										$quantity = $row['quantity'];
 										$oplace = $row['oplace'];
@@ -75,10 +74,10 @@ $search_value = "";
 										$ddate = $row['ddate'];
 										$dstatus = $row['dstatus'];
 
-										//get product info
-										$query1 = "SELECT * FROM products WHERE id='$pid'";
-										$run1 = mysqli_query($con, $query1);
-										$row1 = mysqli_fetch_assoc($run1);
+										// Get product info
+										$stmt = $con->prepare("SELECT * FROM products WHERE id = ?");
+										$stmt->execute([$pid]);
+										$row1 = $stmt->fetch(PDO::FETCH_ASSOC);
 										$pId = $row1['id'];
 										$pName = substr($row1['pName'], 0, 50);
 										$price = $row1['price'];
@@ -97,7 +96,7 @@ $search_value = "";
 											<td>
 												<div class="home-prodlist-img">
 													<a href="OurProducts/view_product.php?pid=<?php echo $pId; ?>">
-														<img src="https://robohash.org/' . $id . '" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
+														<img src="https://robohash.org/<?php echo $id; ?>" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
 													</a>
 												</div>
 											</td>
@@ -111,8 +110,6 @@ $search_value = "";
 			</ul>
 		</div>
 	</div>
-
-
 </body>
 
 </html>

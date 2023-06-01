@@ -1,29 +1,33 @@
-<?php include("inc/connect.inc.php"); ?>
 <?php
-
-ob_start();
 session_start();
+// Include database connection file
+require_once "inc/connect.inc.php";
+
 if (!isset($_SESSION['user_login'])) {
 	header("location: login.php");
+	exit;
 } else {
 	$user = $_SESSION['user_login'];
-	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$query = "SELECT * FROM user WHERE id=:user";
+	$stmt = $pdo->prepare($query);
+	$stmt->bindValue(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$uemail_db = $get_user_email['email'];
-
 	$umob_db = $get_user_email['mobile'];
 	$uadd_db = $get_user_email['address'];
 }
 
 if (isset($_REQUEST['uid'])) {
-
-	$user2 = mysqli_real_escape_string($con, $_REQUEST['uid']);
+	$user2 = $_REQUEST['uid'];
 	if ($user != $user2) {
 		header('location: index.php');
+		exit;
 	}
 } else {
 	header('location: index.php');
+	exit;
 }
 
 $search_value = "";
@@ -53,10 +57,13 @@ $search_value = "";
 					</tr>
 				</thead>
 				<tbody>
-					<?php include("inc/connect.inc.php");
-					$query = "SELECT * FROM orders WHERE uid='$user' ORDER BY id DESC";
-					$run = mysqli_query($con, $query);
-					while ($row = mysqli_fetch_assoc($run)) {
+					<?php
+					$query = "SELECT * FROM orders WHERE uid=:user ORDER BY id DESC";
+					$stmt = $pdo->prepare($query);
+					$stmt->bindValue(':user', $user);
+					$stmt->execute();
+
+					while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 						$pid = $row['pid'];
 						$quantity = $row['quantity'];
 						$oplace = $row['oplace'];
@@ -65,10 +72,12 @@ $search_value = "";
 						$ddate = $row['ddate'];
 						$dstatus = $row['dstatus'];
 
-						//get product info
-						$query1 = "SELECT * FROM products WHERE id='$pid'";
-						$run1 = mysqli_query($con, $query1);
-						$row1 = mysqli_fetch_assoc($run1);
+						// Get product info
+						$query1 = "SELECT * FROM products WHERE id=:pid";
+						$stmt1 = $pdo->prepare($query1);
+						$stmt1->bindValue(':pid', $pid);
+						$stmt1->execute();
+						$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 						$pId = $row1['id'];
 						$pName = substr($row1['pName'], 0, 50);
 						$price = $row1['price'];

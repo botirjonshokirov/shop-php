@@ -6,8 +6,10 @@ if (!isset($_SESSION['user_login'])) {
     $user = "";
 } else {
     $user = $_SESSION['user_login'];
-    $result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-    $get_user_email = mysqli_fetch_assoc($result);
+    $stmt = $pdo->prepare("SELECT * FROM user WHERE id=:user");
+    $stmt->bindParam(':user', $user);
+    $stmt->execute();
+    $get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
     $uname_db = $get_user_email != null ? $get_user_email['firstName'] : null;
 }
 ?>
@@ -26,7 +28,6 @@ $categoryNames = array(
 shuffle($categoryNames);
 
 ?>
-
 
 
 <!DOCTYPE html>

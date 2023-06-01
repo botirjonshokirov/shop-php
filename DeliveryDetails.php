@@ -1,24 +1,22 @@
-<?php include("inc/connect.inc.php"); ?>
 <?php
-
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
 	header("location: login.php");
 } else {
 	$user = $_SESSION['user_login'];
-	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM user WHERE id=:user");
+	$stmt->bindParam(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$uemail_db = $get_user_email['email'];
-
 	$umob_db = $get_user_email['mobile'];
 	$uadd_db = $get_user_email['address'];
 }
 
 if (isset($_REQUEST['uid'])) {
-
-	$user2 = mysqli_real_escape_string($con, $_REQUEST['uid']);
+	$user2 = $_REQUEST['uid'];
 	if ($user != $user2) {
 		header('location: index.php');
 	}
@@ -27,8 +25,11 @@ if (isset($_REQUEST['uid'])) {
 }
 
 if (isset($_REQUEST['cid'])) {
-	$cid = mysqli_real_escape_string($con, $_REQUEST['cid']);
-	if (mysqli_query($con, "DELETE FROM orders WHERE pid='$cid' AND uid='$user'")) {
+	$cid = $_REQUEST['cid'];
+	$stmt = $pdo->prepare("DELETE FROM orders WHERE pid=:cid AND uid=:user");
+	$stmt->bindParam(':cid', $cid);
+	$stmt->bindParam(':user', $user);
+	if ($stmt->execute()) {
 		header('location: mycart.php?uid=' . $user . '');
 	} else {
 		header('location: index.php');
@@ -36,7 +37,6 @@ if (isset($_REQUEST['cid'])) {
 }
 
 $search_value = "";
-
 ?>
 
 <!DOCTYPE html>
@@ -72,17 +72,20 @@ $search_value = "";
 						</thead>
 						<tbody>
 							<?php
-							include("inc/connect.inc.php");
-							$query = "SELECT * FROM cart WHERE uid='$user' ORDER BY id DESC";
-							$run = mysqli_query($con, $query);
-							while ($row = mysqli_fetch_assoc($run)) {
+							$query = "SELECT * FROM cart WHERE uid=:user ORDER BY id DESC";
+							$stmt = $pdo->prepare($query);
+							$stmt->bindParam(':user', $user);
+							$stmt->execute();
+							while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 								$pid = $row['pid'];
 								$quantity = $row['quantity'];
 
 								// Get product info
-								$query1 = "SELECT * FROM products WHERE id='$pid'";
-								$run1 = mysqli_query($con, $query1);
-								$row1 = mysqli_fetch_assoc($run1);
+								$query1 = "SELECT * FROM products WHERE id=:pid";
+								$stmt1 = $pdo->prepare($query1);
+								$stmt1->bindParam(':pid', $pid);
+								$stmt1->execute();
+								$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 								$pId = $row1['id'];
 								$pName = substr($row1['pName'], 0, 50);
 								$price = $row1['price'];
@@ -116,8 +119,6 @@ $search_value = "";
 			</div>
 		</div>
 	</div>
-
-
 
 </body>
 

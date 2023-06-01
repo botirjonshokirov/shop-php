@@ -1,25 +1,23 @@
-<?php include("inc/connect.inc.php"); ?>
 <?php
-
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
 	header("location: login.php");
 } else {
 	$user = $_SESSION['user_login'];
-	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	include("inc/connect.inc.php");
+	$stmt = $con->prepare("SELECT * FROM user WHERE id = ?");
+	$stmt->execute([$user]);
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$uemail_db = $get_user_email['email'];
 	$upass = $get_user_email['password'];
-
 	$umob_db = $get_user_email['mobile'];
 	$uadd_db = $get_user_email['address'];
 }
 
 if (isset($_REQUEST['uid'])) {
-
-	$user2 = mysqli_real_escape_string($con, $_REQUEST['uid']);
+	$user2 = $_REQUEST['uid'];
 	if ($user != $user2) {
 		header('location: index.php');
 	}
@@ -28,64 +26,67 @@ if (isset($_REQUEST['uid'])) {
 }
 
 if (isset($_POST['changesettings'])) {
-	//declere veriable
+	// declare variables
 	$email = $_POST['email'];
 	$opass = $_POST['opass'];
 	$npass = $_POST['npass'];
 	$npass1 = $_POST['npass1'];
-	//triming name
+	// trimming name
 	try {
 		if (empty($_POST['email'])) {
-			throw new Exception('Email can not be empty');
+			throw new Exception('Email cannot be empty');
 		}
 		if (isset($opass) && isset($npass) && isset($npass1) && ($opass != "" && $npass != "" && $npass1 != "")) {
 			if (md5($opass) == $upass) {
 				if ($npass == $npass1) {
 					$npass = md5($npass);
-					mysqli_query($con, "UPDATE user SET password='$npass' WHERE id='$user'");
+					$stmt = $con->prepare("UPDATE user SET password = ? WHERE id = ?");
+					$stmt->execute([$npass, $user]);
 					$success_message = '
-						<div class="signupform_text" style="font-size: 18px; text-align: center;">
-						<font face="bookman">
-							Password changed.
-						</font></div>';
+                        <div class="signupform_text" style="font-size: 18px; text-align: center;">
+                            <font face="bookman">
+                                Password changed.
+                            </font>
+                        </div>';
 				} else {
 					$success_message = '
-						<div class="signupform_text" style=" color: red; font-size: 18px; text-align: center;">
-						<font face="bookman">
-							New password not matched!
-						</font></div>';
+                        <div class="signupform_text" style="color: red; font-size: 18px; text-align: center;">
+                            <font face="bookman">
+                                New password not matched!
+                            </font>
+                        </div>';
 				}
 			} else {
 				$success_message = '
-					<div class="signupform_text" style=" color: red; font-size: 18px; text-align: center;">
-					<font face="bookman">
-						Fillup password field exactly.
-					</font></div>';
+                    <div class="signupform_text" style="color: red; font-size: 18px; text-align: center;">
+                        <font face="bookman">
+                            Fill up password field exactly.
+                        </font>
+                    </div>';
 			}
 		} else {
 			$success_message = '
-					<div class="signupform_text" style=" color: red; font-size: 18px; text-align: center;">
-					<font face="bookman">
-						Fillup password field exactly.
-					</font></div>';
+                <div class="signupform_text" style="color: red; font-size: 18px; text-align: center;">
+                    <font face="bookman">
+                        Fill up password field exactly.
+                    </font>
+                </div>';
 		}
 
 		if ($uemail_db != $email) {
-			if (mysqli_query($con, "UPDATE user SET  email='$email' WHERE id='$user'")) {
-				//success message
-				$success_message = '
-					<div class="signupform_text" style="font-size: 18px; text-align: center;">
-					<font face="bookman">
-						Settings change successfull.
-					</font></div>';
-			}
+			$stmt = $con->prepare("UPDATE user SET email = ? WHERE id = ?");
+			$stmt->execute([$email, $user]);
+			$success_message = '
+                <div class="signupform_text" style="font-size: 18px; text-align: center;">
+                    <font face="bookman">
+                        Settings change successful.
+                    </font>
+                </div>';
 		}
 	} catch (Exception $e) {
 		$error_message = $e->getMessage();
 	}
 }
-
-
 ?>
 
 <!DOCTYPE html>
