@@ -1,4 +1,9 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include("../inc/connect.inc.php");
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
@@ -37,7 +42,7 @@ if (!isset($_SESSION['user_login'])) {
 					$pName = $row['pName'];
 					$price = $row['price'];
 					$description = $row['description'];
-					$photoName = $row['picture'];
+
 
 					// Generating the RoboHash image URL
 					$imageUrl = "https://robohash.org/" . $id;

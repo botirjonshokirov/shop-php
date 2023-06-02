@@ -1,4 +1,9 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include("../inc/connect.inc.php");
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
@@ -28,7 +33,6 @@ if (count($getposts) > 0) {
 	$price = $row['price'];
 	$piece = $row['piece'];
 	$description = $row['description'];
-	$picture = $row['picture'];
 	$item = $row['item'];
 	$available = $row['available'];
 }
