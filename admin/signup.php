@@ -5,23 +5,25 @@ include("../inc/connect.inc.php");
 // Check if the form is submitted
 if (isset($_POST['insert'])) {
   // Retrieve the form data
-  $firstName = mysqli_real_escape_string($con, $_POST['firstName']);
-  $lastName = mysqli_real_escape_string($con, $_POST['lastName']);
-  $email = mysqli_real_escape_string($con, $_POST['email']);
-  $mobile = mysqli_real_escape_string($con, $_POST['mobile']);
-  $address = mysqli_real_escape_string($con, $_POST['address']);
-  $password = mysqli_real_escape_string($con, $_POST['password']);
-  $type = mysqli_real_escape_string($con, $_POST['type']);
-  $confirmCode = mysqli_real_escape_string($con, $_POST['confirmCode']);
+  $firstName = $_POST['firstName'];
+  $lastName = $_POST['lastName'];
+  $email = $_POST['email'];
+  $mobile = $_POST['mobile'];
+  $address = $_POST['address'];
+  $password = $_POST['password'];
+  $type = $_POST['type'];
+  $confirmCode = $_POST['confirmCode'];
 
   // Generate the MD5 hash of the password
   $passwordMd5 = md5($password);
 
   // Create the INSERT query
-  $query = "INSERT INTO admin (firstName, lastName, email, mobile, address, password, type, confirmCode) VALUES ('$firstName', '$lastName', '$email', '$mobile', '$address', '$passwordMd5', '$type', '$confirmCode')";
+  $query = "INSERT INTO admin (firstName, lastName, email, mobile, address, password, type, confirmCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-  // Execute the query
-  $result = mysqli_query($con, $query);
+  // Prepare and execute the query
+  $stmt = $con->prepare($query);
+  $stmt->bind_param("ssssssss", $firstName, $lastName, $email, $mobile, $address, $passwordMd5, $type, $confirmCode);
+  $result = $stmt->execute();
 
   if ($result) {
     // Insertion successful
@@ -32,7 +34,6 @@ if (isset($_POST['insert'])) {
   }
 }
 ?>
-
 <!doctype html>
 <html>
 

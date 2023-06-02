@@ -7,8 +7,8 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$result = $con->query("SELECT * FROM admin WHERE id='$user'");
+	$get_user_email = $result->fetch_assoc();
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 	if ($utype_db == 'staff') {
@@ -17,8 +17,6 @@ if (!isset($_SESSION['admin_login'])) {
 }
 
 ?>
-
-
 <!doctype html>
 <html>
 
@@ -26,7 +24,6 @@ if (!isset($_SESSION['admin_login'])) {
 	<title>RoboHash</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
-
 	<style>
 		.table-container {
 			max-height: 400px;
@@ -66,7 +63,6 @@ if (!isset($_SESSION['admin_login'])) {
 </head>
 
 <body class="home-welcome-text">
-
 	<?php include("./components/admin-navbar.php") ?>
 
 	<?php include("./components/category-list.php") ?>
@@ -96,19 +92,25 @@ if (!isset($_SESSION['admin_login'])) {
 							<?php include("../inc/connect.inc.php");
 							$total = 0;
 							$query = "SELECT * FROM orders WHERE dstatus='yes' ORDER BY id DESC";
-							$run = mysqli_query($con, $query);
-							while ($row = mysqli_fetch_assoc($run)) {
+							$stmt = $con->prepare($query);
+							$stmt->execute();
+							$result = $stmt->get_result();
+							while ($row = $result->fetch_assoc()) {
 								$uid = $row['uid'];
 								$productId = $row['pid'];
 								$quantity = $row['quantity'];
 								$query1 = "SELECT * FROM user WHERE id='$uid'";
-								$run1 = mysqli_query($con, $query1);
-								$row1 = mysqli_fetch_assoc($run1);
+								$stmt1 = $con->prepare($query1);
+								$stmt1->execute();
+								$result1 = $stmt1->get_result();
+								$row1 = $result1->fetch_assoc();
 								$firstName = $row1['firstName'];
 
 								$query2 = "SELECT * FROM products WHERE id='$productId'";
-								$run2 = mysqli_query($con, $query2);
-								$row2 = mysqli_fetch_assoc($run2);
+								$stmt2 = $con->prepare($query2);
+								$stmt2->execute();
+								$result2 = $stmt2->get_result();
+								$row2 = $result2->fetch_assoc();
 								$pPrice = $row2['price'];
 								$payment = $pPrice * $quantity;
 								$total += $payment;
@@ -130,7 +132,6 @@ if (!isset($_SESSION['admin_login'])) {
 			</div>
 		</div>
 	</div>
-
 </body>
 
 </html>

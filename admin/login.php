@@ -10,14 +10,15 @@ if (!isset($_SESSION['admin_login'])) {
 
 if (isset($_POST['login'])) {
 	if (isset($_POST['email']) && isset($_POST['password'])) {
-		$user_login = mysqli_real_escape_string($con, $_POST['email']);
+		$user_login = $_POST['email'];
 		$user_login = mb_convert_case($user_login, MB_CASE_LOWER, "UTF-8");
-		$password_login = mysqli_real_escape_string($con, $_POST['password']);
+		$password_login = $_POST['password'];
 		$num = 0;
 		$password_login_md5 = md5($password_login);
-		$result = mysqli_query($con, "SELECT * FROM admin WHERE (email='$user_login') AND password='$password_login_md5'");
-		$num = mysqli_num_rows($result);
-		$get_user_email = mysqli_fetch_assoc($result);
+		$stmt = $pdo->prepare("SELECT * FROM admin WHERE (email=:user_login) AND password=:password_login_md5");
+		$stmt->execute(['user_login' => $user_login, 'password_login_md5' => $password_login_md5]);
+		$num = $stmt->rowCount();
+		$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 		$get_user_uname_db = $get_user_email['id'];
 		if ($num > 0) {
 			$_SESSION['admin_login'] = $get_user_uname_db;

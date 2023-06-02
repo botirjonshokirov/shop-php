@@ -8,8 +8,9 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id=:user");
+	$stmt->execute(['user' => $user]);
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 }

@@ -7,15 +7,13 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$result = $con->query("SELECT * FROM admin WHERE id='$user'");
+	$get_user_email = $result->fetch_assoc();
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 }
 
 ?>
-
-
 <!doctype html>
 <html>
 
@@ -23,11 +21,9 @@ if (!isset($_SESSION['admin_login'])) {
 	<title>RoboHash</title>
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 </head>
 
 <body class="home-welcome-text">
-
 	<?php include("./components/admin-navbar.php") ?>
 
 	<?php include("./components/category-list.php") ?>
@@ -55,8 +51,10 @@ if (!isset($_SESSION['admin_login'])) {
 			<tbody>
 				<?php include("../inc/connect.inc.php");
 				$query = "SELECT * FROM orders ORDER BY id DESC";
-				$run = mysqli_query($con, $query);
-				while ($row = mysqli_fetch_assoc($run)) {
+				$stmt = $con->prepare($query);
+				$stmt->execute();
+				$result = $stmt->get_result();
+				while ($row = $result->fetch_assoc()) {
 					$oid = $row['id'];
 					$ouid = $row['uid'];
 					$opid = $row['pid'];
@@ -68,17 +66,23 @@ if (!isset($_SESSION['admin_login'])) {
 					$ddate = $row['ddate'];
 
 					// Getting user info
-					$query1 = "SELECT * FROM user WHERE id='$ouid'";
-					$run1 = mysqli_query($con, $query1);
-					$row1 = mysqli_fetch_assoc($run1);
+					$query1 = "SELECT * FROM user WHERE id=?";
+					$stmt1 = $con->prepare($query1);
+					$stmt1->bind_param("i", $ouid);
+					$stmt1->execute();
+					$result1 = $stmt1->get_result();
+					$row1 = $result1->fetch_assoc();
 					$ofname = $row1['firstName'];
 					$oumobile = $row1['mobile'];
 					$ouemail = $row1['email'];
 
 					// Product info
-					$query2 = "SELECT * FROM products WHERE id='$opid'";
-					$run2 = mysqli_query($con, $query2);
-					$row2 = mysqli_fetch_assoc($run2);
+					$query2 = "SELECT * FROM products WHERE id=?";
+					$stmt2 = $con->prepare($query2);
+					$stmt2->bind_param("i", $opid);
+					$stmt2->execute();
+					$result2 = $stmt2->get_result();
+					$row2 = $result2->fetch_assoc();
 					$opcate = $row2['category'];
 					$opitem = $row2['item'];
 					$oppicture = $row2['picture'];
@@ -100,7 +104,7 @@ if (!isset($_SESSION['admin_login'])) {
 						<td>
 							<div class="home-prodlist-img">
 								<a href="editorder.php?eoid=<?php echo $oid; ?>">
-									<img src="https://robohash.org/' . $id . '" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
+									<img src="https://robohash.org/<?php echo $oid; ?>" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
 								</a>
 							</div>
 						</td>

@@ -1,5 +1,5 @@
-<?php include("../inc/connect.inc.php"); ?>
 <?php
+include("../inc/connect.inc.php");
 ob_start();
 session_start();
 if (!isset($_SESSION['admin_login'])) {
@@ -7,8 +7,9 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :user");
+	$stmt->execute(['user' => $user]);
+	$get_user_email = $stmt->fetch();
 
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
@@ -25,7 +26,6 @@ $pCode = "";
 $descri = "";
 
 if (isset($_POST['signup'])) {
-	// Declare variables
 	$pname = $_POST['pname'];
 	$price = $_POST['price'];
 	$piece = $_POST['piece'];
@@ -35,8 +35,18 @@ if (isset($_POST['signup'])) {
 	$pCode = $_POST['code'];
 	$descri = $_POST['descri'];
 
-	// Store the product in the database
-	$result = mysqli_query($con, "INSERT INTO products(pName, price, piece, description, available, category, type, item, pCode) VALUES ('$pname', '$price', '$piece', '$descri', '$available', '$category', '$type', '$item', '$pCode')");
+	$stmt = $pdo->prepare("INSERT INTO products(pName, price, piece, description, available, category, type, item, pCode) VALUES (:pname, :price, :piece, :descri, :available, :category, :type, :item, :pCode)");
+	$result = $stmt->execute([
+		'pname' => $pname,
+		'price' => $price,
+		'piece' => $piece,
+		'descri' => $descri,
+		'available' => $available,
+		'category' => $category,
+		'type' => $type,
+		'item' => $item,
+		'pCode' => $pCode
+	]);
 
 	if ($result) {
 		header("Location: allproducts.php");
@@ -47,7 +57,6 @@ if (isset($_POST['signup'])) {
 }
 
 $search_value = "";
-
 ?>
 
 <!doctype html>

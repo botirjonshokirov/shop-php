@@ -1,5 +1,5 @@
-<?php include("../inc/connect.inc.php"); ?>
 <?php
+include("../inc/connect.inc.php");
 ob_start();
 session_start();
 if (!isset($_SESSION['admin_login'])) {
@@ -7,8 +7,10 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :user");
+	$stmt->execute(['user' => $user]);
+	$get_user_email = $stmt->fetch();
+
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 }
@@ -94,10 +96,9 @@ if (!isset($_SESSION['admin_login'])) {
 							</tr>
 						</thead>
 						<tbody>
-							<?php include("../inc/connect.inc.php");
-							$query = "SELECT * FROM user ORDER BY id DESC";
-							$run = mysqli_query($con, $query);
-							while ($row = mysqli_fetch_assoc($run)) {
+							<?php
+							$stmt = $pdo->query("SELECT * FROM user ORDER BY id DESC");
+							while ($row = $stmt->fetch()) {
 								$id = $row['id'];
 								$fname = $row['firstName'];
 								$lname = $row['lastName'];
