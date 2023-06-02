@@ -7,7 +7,7 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$stmt = $con->prepare("SELECT * FROM admin WHERE id = :user");
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :user");
 	$stmt->bindParam(':user', $user);
 	$stmt->execute();
 	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -57,7 +57,7 @@ if (isset($_POST['signup'])) {
 			throw new Exception('Address cannot be empty');
 		}
 
-		$stmt = $con->prepare("SELECT email FROM admin WHERE email = :u_email");
+		$stmt = $pdo->prepare("SELECT email FROM admin WHERE email = :u_email");
 		$stmt->bindParam(':u_email', $u_email);
 		$stmt->execute();
 		$email_check = $stmt->rowCount();
@@ -69,10 +69,10 @@ if (isset($_POST['signup'])) {
 					$_POST['first_name'] = ucwords($_POST['first_name']);
 					$_POST['last_name'] = ucwords($_POST['last_name']);
 					$_POST['password'] = md5($_POST['password']);
-					$confirmCode = substr(rand() * 900000 + 100000, 0, 6);
+					$pdofirmCode = substr(rand() * 900000 + 100000, 0, 6);
 
 					if ($utype_db == 'admin') {
-						$stmt = $con->prepare("UPDATE admin SET firstName=:first_name, lastName=:last_name, email=:u_email, mobile=:u_mobile, address=:u_address, password=:u_password, type=:u_admin_type WHERE id=:user");
+						$stmt = $pdo->prepare("UPDATE admin SET firstName=:first_name, lastName=:last_name, email=:u_email, mobile=:u_mobile, address=:u_address, password=:u_password, type=:u_admin_type WHERE id=:user");
 						$stmt->bindParam(':first_name', $_POST['first_name']);
 						$stmt->bindParam(':last_name', $_POST['last_name']);
 						$stmt->bindParam(':u_email', $u_email);
@@ -83,7 +83,7 @@ if (isset($_POST['signup'])) {
 						$stmt->bindParam(':user', $user);
 						$stmt->execute();
 					} else {
-						$stmt = $con->prepare("UPDATE admin SET firstName=:first_name, lastName=:last_name, email=:u_email, mobile=:u_mobile, address=:u_address, password=:u_password WHERE id=:user");
+						$stmt = $pdo->prepare("UPDATE admin SET firstName=:first_name, lastName=:last_name, email=:u_email, mobile=:u_mobile, address=:u_address, password=:u_password WHERE id=:user");
 						$stmt->bindParam(':first_name', $_POST['first_name']);
 						$stmt->bindParam(':last_name', $_POST['last_name']);
 						$stmt->bindParam(':u_email', $u_email);

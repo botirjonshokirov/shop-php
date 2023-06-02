@@ -68,13 +68,14 @@ if (isset($_POST['order'])) {
             Your Order successful.
         ";
 
-		$stmt = $pdo->prepare("INSERT INTO orders (uid, pid, quantity, oplace, mobile, odate, delivery) VALUES (:user, :poid, :quan, :address, :mobile, :odate, :delivery)");
+		$stmt = $pdo->prepare("INSERT INTO orders (uid, pid, quantity, oplace, mobile, odate, ddate, delivery) VALUES (:user, :poid, :quan, :address, :mobile, :odate, :ddate, :delivery)");
 		$stmt->bindValue(':user', $user);
 		$stmt->bindValue(':poid', $poid);
 		$stmt->bindValue(':quan', $quan);
 		$stmt->bindValue(':address', $_POST['address']);
 		$stmt->bindValue(':mobile', $_POST['mobile']);
 		$stmt->bindValue(':odate', $d);
+		$stmt->bindValue(':ddate', $d);
 		$stmt->bindValue(':delivery', $del);
 
 		if ($stmt->execute()) {
@@ -99,7 +100,7 @@ if (isset($_POST['order'])) {
 <html>
 
 <head>
-	<title>Noodles & Canned</title>
+	<title>RoboHash</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">

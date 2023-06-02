@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_login'])) {
 } else {
 	$user = $_SESSION['user_login'];
 	include("inc/connect.inc.php");
-	$stmt = $con->prepare("SELECT * FROM user WHERE id = ?");
+	$stmt = $pdo->prepare("SELECT * FROM user WHERE id = ?");
 	$stmt->execute([$user]);
 	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
@@ -40,7 +40,7 @@ if (isset($_POST['changesettings'])) {
 			if (md5($opass) == $upass) {
 				if ($npass == $npass1) {
 					$npass = md5($npass);
-					$stmt = $con->prepare("UPDATE user SET password = ? WHERE id = ?");
+					$stmt = $pdo->prepare("UPDATE user SET password = ? WHERE id = ?");
 					$stmt->execute([$npass, $user]);
 					$success_message = '
                         <div class="signupform_text" style="font-size: 18px; text-align: center;">
@@ -74,7 +74,7 @@ if (isset($_POST['changesettings'])) {
 		}
 
 		if ($uemail_db != $email) {
-			$stmt = $con->prepare("UPDATE user SET email = ? WHERE id = ?");
+			$stmt = $pdo->prepare("UPDATE user SET email = ? WHERE id = ?");
 			$stmt->execute([$email, $user]);
 			$success_message = '
                 <div class="signupform_text" style="font-size: 18px; text-align: center;">

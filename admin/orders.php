@@ -7,8 +7,10 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = $con->query("SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = $result->fetch_assoc();
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id=:user");
+	$stmt->bindValue(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 }
@@ -49,12 +51,12 @@ if (!isset($_SESSION['admin_login'])) {
 				</tr>
 			</thead>
 			<tbody>
-				<?php include("../inc/connect.inc.php");
+				<?php
 				$query = "SELECT * FROM orders ORDER BY id DESC";
-				$stmt = $con->prepare($query);
+				$stmt = $pdo->prepare($query);
 				$stmt->execute();
-				$result = $stmt->get_result();
-				while ($row = $result->fetch_assoc()) {
+				$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+				foreach ($rows as $row) {
 					$oid = $row['id'];
 					$ouid = $row['uid'];
 					$opid = $row['pid'];
@@ -66,23 +68,21 @@ if (!isset($_SESSION['admin_login'])) {
 					$ddate = $row['ddate'];
 
 					// Getting user info
-					$query1 = "SELECT * FROM user WHERE id=?";
-					$stmt1 = $con->prepare($query1);
-					$stmt1->bind_param("i", $ouid);
+					$query1 = "SELECT * FROM user WHERE id=:ouid";
+					$stmt1 = $pdo->prepare($query1);
+					$stmt1->bindValue(':ouid', $ouid);
 					$stmt1->execute();
-					$result1 = $stmt1->get_result();
-					$row1 = $result1->fetch_assoc();
+					$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 					$ofname = $row1['firstName'];
 					$oumobile = $row1['mobile'];
 					$ouemail = $row1['email'];
 
 					// Product info
-					$query2 = "SELECT * FROM products WHERE id=?";
-					$stmt2 = $con->prepare($query2);
-					$stmt2->bind_param("i", $opid);
+					$query2 = "SELECT * FROM products WHERE id=:opid";
+					$stmt2 = $pdo->prepare($query2);
+					$stmt2->bindValue(':opid', $opid);
 					$stmt2->execute();
-					$result2 = $stmt2->get_result();
-					$row2 = $result2->fetch_assoc();
+					$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 					$opcate = $row2['category'];
 					$opitem = $row2['item'];
 					$oppicture = $row2['picture'];

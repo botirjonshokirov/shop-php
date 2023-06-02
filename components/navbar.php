@@ -32,11 +32,11 @@
             <?php
             if ($user != "") {
                 // Fetch the user's name from the database using PDO
-                $stmt = $pdo->prepare("SELECT name FROM users WHERE id = :user_id");
+                $stmt = $pdo->prepare("SELECT firstName FROM user WHERE id = :user_id");
                 $stmt->bindParam(':user_id', $user);
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $uname_db = $row['name'];
+                $uname_db = $row['firstName'];
 
                 echo '
                     <li class="nav-item">

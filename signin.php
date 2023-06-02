@@ -51,7 +51,7 @@ if (isset($_SESSION['user_login'])) {
 			}
 
 			// Check if email already exists
-			$stmt = $con->prepare("SELECT email FROM user WHERE email = ?");
+			$stmt = $pdo->prepare("SELECT email FROM user WHERE email = ?");
 			$stmt->execute([$u_email]);
 			$email_check = $stmt->rowCount();
 
@@ -64,10 +64,10 @@ if (isset($_SESSION['user_login'])) {
 							$_POST['last_name'] = ucwords($_POST['last_name']);
 							$_POST['email'] = mb_convert_case($u_email, MB_CASE_LOWER, "UTF-8");
 							$_POST['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
-							$confirmCode = substr(rand() * 900000 + 100000, 0, 6);
+							$pdofirmCode = substr(rand() * 900000 + 100000, 0, 6);
 
-							$stmt = $con->prepare("INSERT INTO user (firstName, lastName, email, mobile, address, password, confirmCode) VALUES (?, ?, ?, ?, ?, ?, ?)");
-							$stmt->execute([$u_fname, $u_lname, $u_email, $u_mobile, $u_address, $_POST['password'], $confirmCode]);
+							$stmt = $pdo->prepare("INSERT INTO user (firstName, lastName, email, mobile, address, password, confirmCode) VALUES (?, ?, ?, ?, ?, ?, ?)");
+							$stmt->execute([$u_fname, $u_lname, $u_email, $u_mobile, $u_address, $_POST['password'], $pdofirmCode]);
 
 							$success_message = '
 								<div class="signupform_content">
@@ -76,7 +76,7 @@ if (isset($_SESSION['user_login'])) {
 										<font face="bookman">
 											Email: ' . $u_email . '<br>
 											Activation code sent to your email. <br>
-											Your activation code: ' . $confirmCode . '
+											Your activation code: ' . $pdofirmCode . '
 										</font>
 									</div>
 								</div>';

@@ -67,12 +67,12 @@ if (isset($_POST['signup'])) {
 					$_POST['first_name'] = ucwords($_POST['first_name']);
 					$_POST['last_name'] = ucwords($_POST['last_name']);
 					$_POST['password'] = md5($_POST['password']);
-					$confirmCode   = substr(rand() * 900000 + 100000, 0, 6);
+					$pdofirmCode   = substr(rand() * 900000 + 100000, 0, 6);
 					// send email
 					$msg = "
                     Assalamu Alaikum...
 
-                    Your activation code: " . $confirmCode . "
+                    Your activation code: " . $pdofirmCode . "
                     Signup email: " . $_POST['email'] . "
 
                     ";
@@ -87,7 +87,7 @@ if (isset($_POST['signup'])) {
 						'signupaddress' => $_POST['signupaddress'],
 						'password' => $_POST['password'],
 						'admintype' => $_POST['admintype'],
-						'confirmCode' => $confirmCode
+						'confirmCode' => $pdofirmCode
 					]);
 
 					//success message

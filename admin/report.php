@@ -7,15 +7,16 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = $con->query("SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = $result->fetch_assoc();
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :user");
+	$stmt->bindValue(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 	if ($utype_db == 'staff') {
 		header("location: login.php");
 	}
 }
-
 ?>
 <!doctype html>
 <html>
@@ -96,12 +97,12 @@ if (!isset($_SESSION['admin_login'])) {
 							</tr>
 						</thead>
 						<tbody>
-							<?php include("../inc/connect.inc.php");
+							<?php
 							$query = "SELECT * FROM products ORDER BY id DESC";
-							$stmt = $con->prepare($query);
+							$stmt = $pdo->prepare($query);
 							$stmt->execute();
-							$result = $stmt->get_result();
-							while ($row = $result->fetch_assoc()) {
+							$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+							foreach ($rows as $row) {
 								$id = $row['id'];
 								$pName = substr($row['pName'], 0, 50);
 								$descri = $row['description'];

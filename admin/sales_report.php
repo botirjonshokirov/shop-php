@@ -7,8 +7,10 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = $con->query("SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = $result->fetch_assoc();
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id=:user");
+	$stmt->bindValue(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 	if ($utype_db == 'staff') {
@@ -89,28 +91,29 @@ if (!isset($_SESSION['admin_login'])) {
 							</tr>
 						</thead>
 						<tbody>
-							<?php include("../inc/connect.inc.php");
+							<?php
 							$total = 0;
 							$query = "SELECT * FROM orders WHERE dstatus='yes' ORDER BY id DESC";
-							$stmt = $con->prepare($query);
+							$stmt = $pdo->prepare($query);
 							$stmt->execute();
-							$result = $stmt->get_result();
-							while ($row = $result->fetch_assoc()) {
+							$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+							foreach ($rows as $row) {
 								$uid = $row['uid'];
 								$productId = $row['pid'];
 								$quantity = $row['quantity'];
-								$query1 = "SELECT * FROM user WHERE id='$uid'";
-								$stmt1 = $con->prepare($query1);
+
+								$query1 = "SELECT * FROM user WHERE id=:uid";
+								$stmt1 = $pdo->prepare($query1);
+								$stmt1->bindValue(':uid', $uid);
 								$stmt1->execute();
-								$result1 = $stmt1->get_result();
-								$row1 = $result1->fetch_assoc();
+								$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 								$firstName = $row1['firstName'];
 
-								$query2 = "SELECT * FROM products WHERE id='$productId'";
-								$stmt2 = $con->prepare($query2);
+								$query2 = "SELECT * FROM products WHERE id=:productId";
+								$stmt2 = $pdo->prepare($query2);
+								$stmt2->bindValue(':productId', $productId);
 								$stmt2->execute();
-								$result2 = $stmt2->get_result();
-								$row2 = $result2->fetch_assoc();
+								$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 								$pPrice = $row2['price'];
 								$payment = $pPrice * $quantity;
 								$total += $payment;

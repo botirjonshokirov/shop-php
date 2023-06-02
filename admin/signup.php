@@ -12,7 +12,7 @@ if (isset($_POST['insert'])) {
   $address = $_POST['address'];
   $password = $_POST['password'];
   $type = $_POST['type'];
-  $confirmCode = $_POST['confirmCode'];
+  $pdofirmCode = $_POST['confirmCode'];
 
   // Generate the MD5 hash of the password
   $passwordMd5 = md5($password);
@@ -21,8 +21,8 @@ if (isset($_POST['insert'])) {
   $query = "INSERT INTO admin (firstName, lastName, email, mobile, address, password, type, confirmCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
   // Prepare and execute the query
-  $stmt = $con->prepare($query);
-  $stmt->bind_param("ssssssss", $firstName, $lastName, $email, $mobile, $address, $passwordMd5, $type, $confirmCode);
+  $stmt = $pdo->prepare($query);
+  $stmt->bind_param("ssssssss", $firstName, $lastName, $email, $mobile, $address, $passwordMd5, $type, $pdofirmCode);
   $result = $stmt->execute();
 
   if ($result) {

@@ -1,4 +1,9 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include("./inc/connect.inc.php");
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
@@ -6,7 +11,7 @@ if (!isset($_SESSION['user_login'])) {
 } else {
 	$user = $_SESSION['user_login'];
 	include("inc/connect.inc.php");
-	$stmt = $con->prepare("SELECT * FROM user WHERE id = ?");
+	$stmt = $pdo->prepare("SELECT * FROM user WHERE id = ?");
 	$stmt->execute([$user]);
 	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
@@ -62,7 +67,7 @@ $search_value = "";
 								<tbody>
 									<?php
 									include("inc/connect.inc.php");
-									$stmt = $con->prepare("SELECT * FROM orders WHERE uid = ? ORDER BY id DESC");
+									$stmt = $pdo->prepare("SELECT * FROM orders WHERE uid = ? ORDER BY id DESC");
 									$stmt->execute([$user]);
 									$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 									foreach ($rows as $row) {
@@ -75,13 +80,12 @@ $search_value = "";
 										$dstatus = $row['dstatus'];
 
 										// Get product info
-										$stmt = $con->prepare("SELECT * FROM products WHERE id = ?");
+										$stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
 										$stmt->execute([$pid]);
 										$row1 = $stmt->fetch(PDO::FETCH_ASSOC);
 										$pId = $row1['id'];
 										$pName = substr($row1['pName'], 0, 50);
 										$price = $row1['price'];
-										$picture = $row1['picture'];
 										$item = $row1['item'];
 										$category = $row1['category'];
 									?>

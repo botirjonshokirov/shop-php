@@ -31,9 +31,9 @@ if (isset($_POST['searchId'])) {
 if (isset($_POST['resetPassword'])) {
 	if (isset($_SESSION['reset']) && $_SESSION['reset'] === true && isset($_SESSION['email'])) {
 		$newPassword = $_POST['newPassword'];
-		$confirmPassword = $_POST['confirmPassword'];
+		$pdofirmPassword = $_POST['confirmPassword'];
 
-		if ($newPassword === $confirmPassword) {
+		if ($newPassword === $pdofirmPassword) {
 			// Hash the new password before storing it in the database
 			$hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 			$email = $_SESSION['email'];
