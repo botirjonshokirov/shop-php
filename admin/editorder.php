@@ -1,5 +1,5 @@
-<?php include("../inc/connect.inc.php"); ?>
 <?php
+include("../inc/connect.inc.php");
 
 ob_start();
 session_start();
@@ -9,9 +9,10 @@ if (!isset($_SESSION['admin_login'])) {
 } else {
 	if (isset($_REQUEST['eoid'])) {
 
-		$eoid = mysqli_real_escape_string($con, $_REQUEST['eoid']);
-		$getposts5 = mysqli_query($con, "SELECT * FROM orders WHERE id='$eoid'") or die(mysqlI_error($con));
-		if (mysqli_num_rows($getposts5)) {
+		$eoid = $_REQUEST['eoid'];
+		$stmt = $pdo->prepare("SELECT * FROM orders WHERE id = :eoid");
+		$stmt->execute(['eoid' => $eoid]);
+		if ($stmt->rowCount() > 0) {
 		} else {
 			header('location: index.php');
 		}
@@ -19,15 +20,18 @@ if (!isset($_SESSION['admin_login'])) {
 		header('location: index.php');
 	}
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :user");
+	$stmt->execute(['user' => $user]);
+	$get_user_email = $stmt->fetch();
+
 	$uname_db = $get_user_email['firstName'];
 	$type_db = $get_user_email['type'];
 	$utype_db = $get_user_email['type'];
 
 
-	$result1 = mysqli_query($con, "SELECT * FROM orders WHERE id='$eoid'");
-	$get_order_info = mysqli_fetch_assoc($result1);
+	$stmt1 = $pdo->prepare("SELECT * FROM orders WHERE id = :eoid");
+	$stmt1->execute(['eoid' => $eoid]);
+	$get_order_info = $stmt1->fetch();
 	$eouid = $get_order_info['uid'];
 	$eopid = $get_order_info['pid'];
 	$eoquantity = $get_order_info['quantity'];
@@ -38,26 +42,26 @@ if (!isset($_SESSION['admin_login'])) {
 	$eodate = $get_order_info['odate'];
 	$eddate = $get_order_info['ddate'];
 
-	$result2 = mysqli_query($con, "SELECT * FROM user WHERE id='$eouid'");
-	$get_order_info2 = mysqli_fetch_assoc($result2);
+	$stmt2 = $pdo->prepare("SELECT * FROM user WHERE id = :eouid");
+	$stmt2->execute(['eouid' => $eouid]);
+	$get_order_info2 = $stmt2->fetch();
 	$euname = $get_order_info2['firstName'];
 	$euemail = $get_order_info2['email'];
 	$eumobile = $get_order_info2['mobile'];
 }
 
-$getposts = mysqli_query($con, "SELECT * FROM products WHERE id ='$eopid'") or die(mysqlI_error($con));
-if (mysqli_num_rows($getposts)) {
-	$row = mysqli_fetch_assoc($getposts);
-	$id = $row['id'];
-	$pName = $row['pName'];
-	$price = $row['price'];
-	$piece = $row['piece'];
-	$description = $row['description'];
-	$picture = $row['picture'];
-	$item = $row['item'];
-	$category = $row['category'];
-	$available = $row['available'];
-}
+$stmt3 = $pdo->prepare("SELECT * FROM products WHERE id = :eopid");
+$stmt3->execute(['eopid' => $eopid]);
+$row = $stmt3->fetch();
+$id = $row['id'];
+$pName = $row['pName'];
+$price = $row['price'];
+$piece = $row['piece'];
+$description = $row['description'];
+$picture = $row['picture'];
+$item = $row['item'];
+$category = $row['category'];
+$available = $row['available'];
 
 //order
 
@@ -71,27 +75,26 @@ if (isset($_POST['order'])) {
 		if (empty($_POST['dstatus'])) {
 			throw new Exception('Status can not be empty');
 		}
-		if (mysqli_query($con, "UPDATE orders SET dstatus='$eodstatus', ddate='$ddate', quantity='$dquantity' WHERE id='$eoid'")) {
-			//success message
-			header('location: editorder.php?eoid=' . $eoid . '');
-			$success_message = '
-				<div class="signupform_content"><h2><font face="bookman">Change successfull!</font></h2>
-				</div>';
-		}
+		$stmt4 = $pdo->prepare("UPDATE orders SET dstatus = :eodstatus, ddate = :ddate, quantity = :dquantity WHERE id = :eoid");
+		$stmt4->execute(['eodstatus' => $eodstatus, 'ddate' => $ddate, 'dquantity' => $dquantity, 'eoid' => $eoid]);
+
+		header('location: editorder.php?eoid=' . $eoid . '');
+		$success_message = '
+			<div class="signupform_content"><h2><font face="bookman">Change successful!</font></h2>
+			</div>';
 	} catch (Exception $e) {
 		$error_message = $e->getMessage();
 	}
 }
 if (isset($_POST['delorder'])) {
 	//triming name
-	if (mysqli_query($con, "DELETE FROM orders WHERE id='$eoid'")) {
+	$stmt5 = $pdo->prepare("DELETE FROM orders WHERE id = :eoid");
+	$stmt5->execute(['eoid' => $eoid]);
 
-		header('location: orders.php');
-	}
+	header('location: orders.php');
 }
+
 $search_value = "";
-
-
 ?>
 
 <!DOCTYPE html>
@@ -102,7 +105,6 @@ $search_value = "";
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 </head>
 
 <body>
@@ -135,7 +137,6 @@ $search_value = "";
 							<?php for ($i = 1; $i <= $available; $i++) { ?>
 								<option value="<?php echo $i; ?>">Quantity: <?php echo $i; ?></option>
 							<?php } ?>
-							?>
 						</select>
 					</div>
 					<div class="form-group">
@@ -156,7 +157,7 @@ $search_value = "";
 				<ul class="list-unstyled">
 					<li>
 						<div class="home-prodlist-img">
-							<img src="https://robohash.org/' . $id . '" class="home-prodlist-imgi">
+							<img src="https://robohash.org/<?php echo $id; ?>" class="home-prodlist-imgi">
 							<div class="text-center"><?php echo $pName; ?></div>
 						</div>
 					</li>
@@ -164,7 +165,6 @@ $search_value = "";
 			</div>
 		</div>
 	</div>
-
 </body>
 
 </html>

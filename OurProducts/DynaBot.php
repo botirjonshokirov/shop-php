@@ -1,13 +1,19 @@
-<?php include("../inc/connect.inc.php"); ?>
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include("../inc/connect.inc.php");
 ob_start();
 session_start();
 if (!isset($_SESSION['user_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['user_login'];
-	$result = mysqli_query($con, "SELECT * FROM user WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM user WHERE id = :id");
+	$stmt->bindParam(':id', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 }
 ?>
@@ -29,14 +35,16 @@ if (!isset($_SESSION['user_login'])) {
 	<div class="container">
 		<div class="row">
 			<?php
-			$getposts = mysqli_query($con, "SELECT * FROM products WHERE available >= '1' AND item = 'DynaBot' ORDER BY id DESC LIMIT 10") or die(mysqli_error($con));
-			if (mysqli_num_rows($getposts)) {
-				while ($row = mysqli_fetch_assoc($getposts)) {
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE available >= '1' AND item = 'DynaBot' ORDER BY id DESC LIMIT 10");
+			$stmt->execute();
+			$getposts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			if (count($getposts) > 0) {
+				foreach ($getposts as $row) {
 					$id = $row['id'];
 					$pName = $row['pName'];
 					$price = $row['price'];
 					$description = $row['description'];
-					$photoName = $row['picture'];
+
 
 					// Generating the RoboHash image URL
 					$imageUrl = "https://robohash.org/" . $id;

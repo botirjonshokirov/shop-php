@@ -1,9 +1,8 @@
 <?php
 session_start();
-//destroy session
+// Destroy session
 session_destroy();
-//unset cookies
+// Unset cookies
 setcookie('user_login', '', 0, "/");
 
 header("Location: index.php");
-?>

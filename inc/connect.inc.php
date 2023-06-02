@@ -1,3 +1,11 @@
 <?php 
-	$con = mysqli_connect("localhost","root","", "grocerydb") or die("Couldn't connect to SQL server");
-?>
+	$dsn = "mysql:host=localhost;dbname=grocerydb;charset=utf8mb4";
+	$username = "root";
+	$password = "";
+	
+	try {
+	    $pdo = new PDO($dsn, $username, $password);
+	    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch (PDOException $e) {
+	    die("Connection failed: " . $e->getMessage());
+	}

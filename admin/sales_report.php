@@ -7,8 +7,10 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id=:user");
+	$stmt->bindValue(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 	if ($utype_db == 'staff') {
@@ -17,8 +19,6 @@ if (!isset($_SESSION['admin_login'])) {
 }
 
 ?>
-
-
 <!doctype html>
 <html>
 
@@ -26,7 +26,6 @@ if (!isset($_SESSION['admin_login'])) {
 	<title>RoboHash</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
-
 	<style>
 		.table-container {
 			max-height: 400px;
@@ -66,7 +65,6 @@ if (!isset($_SESSION['admin_login'])) {
 </head>
 
 <body class="home-welcome-text">
-
 	<?php include("./components/admin-navbar.php") ?>
 
 	<?php include("./components/category-list.php") ?>
@@ -93,22 +91,29 @@ if (!isset($_SESSION['admin_login'])) {
 							</tr>
 						</thead>
 						<tbody>
-							<?php include("../inc/connect.inc.php");
+							<?php
 							$total = 0;
 							$query = "SELECT * FROM orders WHERE dstatus='yes' ORDER BY id DESC";
-							$run = mysqli_query($con, $query);
-							while ($row = mysqli_fetch_assoc($run)) {
+							$stmt = $pdo->prepare($query);
+							$stmt->execute();
+							$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+							foreach ($rows as $row) {
 								$uid = $row['uid'];
 								$productId = $row['pid'];
 								$quantity = $row['quantity'];
-								$query1 = "SELECT * FROM user WHERE id='$uid'";
-								$run1 = mysqli_query($con, $query1);
-								$row1 = mysqli_fetch_assoc($run1);
+
+								$query1 = "SELECT * FROM user WHERE id=:uid";
+								$stmt1 = $pdo->prepare($query1);
+								$stmt1->bindValue(':uid', $uid);
+								$stmt1->execute();
+								$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 								$firstName = $row1['firstName'];
 
-								$query2 = "SELECT * FROM products WHERE id='$productId'";
-								$run2 = mysqli_query($con, $query2);
-								$row2 = mysqli_fetch_assoc($run2);
+								$query2 = "SELECT * FROM products WHERE id=:productId";
+								$stmt2 = $pdo->prepare($query2);
+								$stmt2->bindValue(':productId', $productId);
+								$stmt2->execute();
+								$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 								$pPrice = $row2['price'];
 								$payment = $pPrice * $quantity;
 								$total += $payment;
@@ -130,7 +135,6 @@ if (!isset($_SESSION['admin_login'])) {
 			</div>
 		</div>
 	</div>
-
 </body>
 
 </html>

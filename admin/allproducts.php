@@ -1,5 +1,5 @@
-<?php include("../inc/connect.inc.php"); ?>
 <?php
+include("../inc/connect.inc.php");
 ob_start();
 session_start();
 if (!isset($_SESSION['admin_login'])) {
@@ -7,16 +7,16 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :user");
+	$stmt->execute(['user' => $user]);
+	$get_user_email = $stmt->fetch();
+
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 }
 
 $search_value = "";
-
 ?>
-
 
 <!doctype html>
 <html>
@@ -25,7 +25,6 @@ $search_value = "";
 	<title>RoboHash</title>
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 </head>
 
 <body class="home-welcome-text">
@@ -52,10 +51,8 @@ $search_value = "";
 			</thead>
 			<tbody>
 				<?php
-				include("../inc/connect.inc.php");
-				$query = "SELECT * FROM products ORDER BY id DESC";
-				$run = mysqli_query($con, $query);
-				while ($row = mysqli_fetch_assoc($run)) {
+				$stmt = $pdo->query("SELECT * FROM products ORDER BY id DESC");
+				while ($row = $stmt->fetch()) {
 					$id = $row['id'];
 					$pName = substr($row['pName'], 0, 50);
 					$descri = $row['description'];
@@ -82,7 +79,7 @@ $search_value = "";
 						<td>
 							<div class="home-prodlist-img">
 								<a href="editproduct.php?epid=<?php echo $id; ?>">
-									<img src="https://robohash.org/' . $id . '" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
+									<img src="https://robohash.org/<?php echo $id; ?>" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
 								</a>
 							</div>
 						</td>

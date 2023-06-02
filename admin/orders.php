@@ -7,15 +7,15 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id=:user");
+	$stmt->bindValue(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 }
 
 ?>
-
-
 <!doctype html>
 <html>
 
@@ -23,11 +23,9 @@ if (!isset($_SESSION['admin_login'])) {
 	<title>RoboHash</title>
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 </head>
 
 <body class="home-welcome-text">
-
 	<?php include("./components/admin-navbar.php") ?>
 
 	<?php include("./components/category-list.php") ?>
@@ -53,10 +51,12 @@ if (!isset($_SESSION['admin_login'])) {
 				</tr>
 			</thead>
 			<tbody>
-				<?php include("../inc/connect.inc.php");
+				<?php
 				$query = "SELECT * FROM orders ORDER BY id DESC";
-				$run = mysqli_query($con, $query);
-				while ($row = mysqli_fetch_assoc($run)) {
+				$stmt = $pdo->prepare($query);
+				$stmt->execute();
+				$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+				foreach ($rows as $row) {
 					$oid = $row['id'];
 					$ouid = $row['uid'];
 					$opid = $row['pid'];
@@ -68,17 +68,21 @@ if (!isset($_SESSION['admin_login'])) {
 					$ddate = $row['ddate'];
 
 					// Getting user info
-					$query1 = "SELECT * FROM user WHERE id='$ouid'";
-					$run1 = mysqli_query($con, $query1);
-					$row1 = mysqli_fetch_assoc($run1);
+					$query1 = "SELECT * FROM user WHERE id=:ouid";
+					$stmt1 = $pdo->prepare($query1);
+					$stmt1->bindValue(':ouid', $ouid);
+					$stmt1->execute();
+					$row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 					$ofname = $row1['firstName'];
 					$oumobile = $row1['mobile'];
 					$ouemail = $row1['email'];
 
 					// Product info
-					$query2 = "SELECT * FROM products WHERE id='$opid'";
-					$run2 = mysqli_query($con, $query2);
-					$row2 = mysqli_fetch_assoc($run2);
+					$query2 = "SELECT * FROM products WHERE id=:opid";
+					$stmt2 = $pdo->prepare($query2);
+					$stmt2->bindValue(':opid', $opid);
+					$stmt2->execute();
+					$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 					$opcate = $row2['category'];
 					$opitem = $row2['item'];
 					$oppicture = $row2['picture'];
@@ -100,7 +104,7 @@ if (!isset($_SESSION['admin_login'])) {
 						<td>
 							<div class="home-prodlist-img">
 								<a href="editorder.php?eoid=<?php echo $oid; ?>">
-									<img src="https://robohash.org/' . $id . '" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
+									<img src="https://robohash.org/<?php echo $oid; ?>" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
 								</a>
 							</div>
 						</td>

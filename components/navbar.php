@@ -31,23 +31,30 @@
         <ul class="navbar-nav ml-auto">
             <?php
             if ($user != "") {
+                // Fetch the user's name from the database using PDO
+                $stmt = $pdo->prepare("SELECT firstName FROM user WHERE id = :user_id");
+                $stmt->bindParam(':user_id', $user);
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $uname_db = $row['firstName'];
+
                 echo '
-						<li class="nav-item">
-							<a class="nav-link" href="profile.php?uid=' . $user . '">Hi ' . $uname_db . '</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="../logout.php">Log Out</a>
-						</li>
-					';
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.php?uid=' . $user . '">Hi ' . $uname_db . '</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../logout.php">Log Out</a>
+                    </li>
+                ';
             } else {
                 echo '
-						<li class="nav-item">
-							<a class="nav-link" href="signin.php">Sign In</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="login.php">Log In</a>
-						</li>
-					';
+                    <li class="nav-item">
+                        <a class="nav-link" href="signin.php">Sign In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.php">Log In</a>
+                    </li>
+                ';
             }
             ?>
         </ul>

@@ -10,6 +10,7 @@
       <ul class="navbar-nav">
         <li class="nav-item">
           <?php
+          // Check if user is logged in
           if ($user != "") {
             echo '<a class="nav-link" href="logout.php">LOG OUT</a>';
           } else {
@@ -19,8 +20,22 @@
         </li>
         <li class="nav-item">
           <?php
+          // Check if user is logged in
           if ($user != "") {
-            echo '<a class="nav-link" href="profile.php?uid=' . $user . '">Hi ' . $uname_db . '</a>';
+            try {
+              // Fetch the user's name from the database using PDO
+              $stmt = $pdo->prepare("SELECT firstName FROM user WHERE id = :user_id");
+              $stmt->bindParam(':user_id', $user);
+              $stmt->execute();
+              $row = $stmt->fetch(PDO::FETCH_ASSOC);
+              $uname_db = $row['firstName'];
+
+              echo '<a class="nav-link" href="profile.php?uid=' . $user . '">Hi ' . $uname_db . '</a>';
+            } catch (PDOException $e) {
+              // Display error message
+              echo '<a class="nav-link" href="profile.php?uid=' . $user . '">Hi User</a>';
+              echo '<p class="error">Error: ' . $e->getMessage() . '</p>';
+            }
           } else {
             echo '<a class="nav-link" href="login.php">LOG IN</a>';
           }

@@ -7,18 +7,17 @@ if (!isset($_SESSION['admin_login'])) {
 	$user = "";
 } else {
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :user");
+	$stmt->bindValue(':user', $user);
+	$stmt->execute();
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 	if ($utype_db == 'staff') {
 		header("location: login.php");
 	}
 }
-
 ?>
-
-
 <!doctype html>
 <html>
 
@@ -26,7 +25,6 @@ if (!isset($_SESSION['admin_login'])) {
 	<title>RoboHash</title>
 	<link rel="stylesheet" type="text/css" href="../css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 	<style>
 		.table-container {
 			max-height: 400px;
@@ -63,11 +61,9 @@ if (!isset($_SESSION['admin_login'])) {
 			background-color: #0056b3;
 		}
 	</style>
-
 </head>
 
 <body>
-
 	<?php include("./components/admin-navbar.php") ?>
 
 	<?php include("./components/category-list.php") ?>
@@ -101,10 +97,12 @@ if (!isset($_SESSION['admin_login'])) {
 							</tr>
 						</thead>
 						<tbody>
-							<?php include("../inc/connect.inc.php");
+							<?php
 							$query = "SELECT * FROM products ORDER BY id DESC";
-							$run = mysqli_query($con, $query);
-							while ($row = mysqli_fetch_assoc($run)) {
+							$stmt = $pdo->prepare($query);
+							$stmt->execute();
+							$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+							foreach ($rows as $row) {
 								$id = $row['id'];
 								$pName = substr($row['pName'], 0, 50);
 								$descri = $row['description'];
@@ -127,9 +125,9 @@ if (!isset($_SESSION['admin_login'])) {
 									<td><?php echo $item; ?></td>
 									<td><?php echo $pCode; ?></td>
 									<td><?php echo '<div class="home-prodlist-img"><a href="editproduct.php?epid=' . $id . '">
-                                  <img src="https://robohash.org/' . $id . '" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
-                                  </a>
-                                </div>' ?></td>
+                              <img src="https://robohash.org/' . $id . '" class="home-prodlist-imgi" style="height: 75px; width: 75px;">
+                              </a>
+                            </div>' ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
@@ -138,11 +136,6 @@ if (!isset($_SESSION['admin_login'])) {
 			</div>
 		</div>
 	</div>
-
-
-
-
-
 </body>
 
 </html>

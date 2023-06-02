@@ -2,7 +2,6 @@
 ob_start();
 session_start();
 
-
 // Include the necessary files and establish a database connection
 include("./inc/connect.inc.php");
 
@@ -14,10 +13,12 @@ if (isset($_POST['searchId'])) {
 		$error_message = "Invalid email format";
 	} else {
 		// Check if the email exists in the database
-		$query = "SELECT * FROM user WHERE email='$email'";
-		$result = mysqli_query($con, $query);
+		$query = "SELECT * FROM user WHERE email=:email";
+		$stmt = $pdo->prepare($query);
+		$stmt->bindParam(':email', $email);
+		$stmt->execute();
 
-		if (mysqli_num_rows($result) > 0) {
+		if ($stmt->rowCount() > 0) {
 			$_SESSION['email'] = $email;
 			$_SESSION['reset'] = true;
 			$success_message = "User found! Please enter a new password.";
@@ -30,16 +31,19 @@ if (isset($_POST['searchId'])) {
 if (isset($_POST['resetPassword'])) {
 	if (isset($_SESSION['reset']) && $_SESSION['reset'] === true && isset($_SESSION['email'])) {
 		$newPassword = $_POST['newPassword'];
-		$confirmPassword = $_POST['confirmPassword'];
+		$pdofirmPassword = $_POST['confirmPassword'];
 
-		if ($newPassword === $confirmPassword) {
+		if ($newPassword === $pdofirmPassword) {
 			// Hash the new password before storing it in the database
 			$hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 			$email = $_SESSION['email'];
 
 			// Update the user's password in the database
-			$updateQuery = "UPDATE user SET password='" . md5($newPassword) . "' WHERE email='$email'";
-			$updateResult = mysqli_query($con, $updateQuery);
+			$updateQuery = "UPDATE user SET password=:password WHERE email=:email";
+			$stmt = $pdo->prepare($updateQuery);
+			$stmt->bindParam(':password', md5($newPassword));
+			$stmt->bindParam(':email', $email);
+			$updateResult = $stmt->execute();
 
 			if ($updateResult) {
 				$success_message = "Password reset successfully!";

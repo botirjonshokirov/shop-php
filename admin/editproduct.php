@@ -9,19 +9,21 @@ if (!isset($_SESSION['admin_login'])) {
 } else {
 	if (isset($_REQUEST['epid'])) {
 
-		$epid = mysqli_real_escape_string($con, $_REQUEST['epid']);
+		$epid = $_REQUEST['epid'];
 	} else {
 		header('location: index.php');
 	}
 	$user = $_SESSION['admin_login'];
-	$result = mysqli_query($con, "SELECT * FROM admin WHERE id='$user'");
-	$get_user_email = mysqli_fetch_assoc($result);
+	$stmt = $pdo->prepare("SELECT * FROM admin WHERE id=:user");
+	$stmt->execute(['user' => $user]);
+	$get_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
 	$uname_db = $get_user_email['firstName'];
 	$utype_db = $get_user_email['type'];
 }
-$getposts = mysqli_query($con, "SELECT * FROM products WHERE id ='$epid'") or die(mysqlI_error($con));
-if (mysqli_num_rows($getposts)) {
-	$row = mysqli_fetch_assoc($getposts);
+$stmt = $pdo->prepare("SELECT * FROM products WHERE id=:epid");
+$stmt->execute(['epid' => $epid]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($stmt->rowCount() > 0) {
 	$id = $row['id'];
 	$pName = $row['pName'];
 	$piece = $row['piece'];
@@ -51,32 +53,39 @@ if (isset($_POST['updatepro'])) {
 	//triming name
 	$_POST['pname'] = trim($_POST['pname']);
 
-	if ($result = mysqli_query($con, "UPDATE products SET pName='$_POST[pname]',price='$_POST[price]',description='$_POST[descri]',available='$_POST[available]',category='$_POST[category]',type='$_POST[type]',item='$_POST[item]',pCode='$_POST[code]' WHERE id='$epid'")) {
-		header("Location: editproduct.php?epid=" . $epid . "");
-	} else {
-		echo "no changed";
-	}
+	$stmt = $pdo->prepare("UPDATE products SET pName=:pname, price=:price, description=:descri, available=:available, category=:category, type=:type, item=:item, pCode=:code WHERE id=:epid");
+	$stmt->execute([
+		'pname' => $_POST['pname'],
+		'price' => $_POST['price'],
+		'descri' => $_POST['descri'],
+		'available' => $_POST['available'],
+		'category' => $_POST['category'],
+		'type' => $_POST['type'],
+		'item' => $_POST['item'],
+		'code' => $_POST['code'],
+		'epid' => $epid
+	]);
+
+	header("Location: editproduct.php?epid=" . $epid . "");
+	exit();
 }
 if (isset($_POST['updatepic'])) {
 
-	if ($_FILES['profilepic'] == "") {
+	if ($_FILES['profilepic']['name'] == "") {
 
 		echo "not changed";
 	} else {
-		//finding file extention
-		$profile_pic_name = @$_FILES['profilepic']['name'];
+		//finding file extension
+		$profile_pic_name = $_FILES['profilepic']['name'];
 		$file_basename = substr($profile_pic_name, 0, strripos($profile_pic_name, '.'));
 		$file_ext = substr($profile_pic_name, strripos($profile_pic_name, '.'));
 
 		if (((@$_FILES['profilepic']['type'] == 'image/jpeg') || (@$_FILES['profilepic']['type'] == 'image/png') || (@$_FILES['profilepic']['type'] == 'image/jpg') || (@$_FILES['profilepic']['type'] == 'image/gif')) && (@$_FILES['profilepic']['size'] < 1000000)) {
 
 			$item = $item;
-			if (file_exists("../image/product/$item")) {
-				//nothing
-			} else {
+			if (!file_exists("../image/product/$item")) {
 				mkdir("../image/product/$item");
 			}
-
 
 			$filename = strtotime(date('Y-m-d H:i:s')) . $file_ext;
 
@@ -85,19 +94,16 @@ if (isset($_POST['updatepic'])) {
 			} else {
 				if (move_uploaded_file(@$_FILES["profilepic"]["tmp_name"], "../image/product/$item/" . $filename)) {
 					$photos = $filename;
-					if ($result = mysqli_query($con, "UPDATE products SET picture='$photos' WHERE id='$epid'")) {
 
-						$delete_file = unlink("../image/product/$item/" . $picture);
-						header("Location: editproduct.php?epid=" . $epid . "");
-					} else {
-						echo "Wrong!";
-					}
+					$stmt = $pdo->prepare("UPDATE products SET picture=:photos WHERE id=:epid");
+					$stmt->execute(['photos' => $photos, 'epid' => $epid]);
+
+					$delete_file = unlink("../image/product/$item/" . $picture);
+					header("Location: editproduct.php?epid=" . $epid . "");
+					exit();
 				} else {
-					echo "Something Worng on upload!!!";
+					echo "Something went wrong during upload!";
 				}
-				//echo "Uploaded and stored in: userdata/profile_pics/$item/".@$_FILES["profilepic"]["name"];
-
-
 			}
 		} else {
 			$error_message = "Choose a picture!";
@@ -105,17 +111,18 @@ if (isset($_POST['updatepic'])) {
 	}
 }
 
-
-
 if (isset($_POST['delprod'])) {
 	//triming name
-	$getposts1 = mysqli_query($con, "SELECT pid FROM orders WHERE pid='$epid'") or die(mysqlI_error($con));
-	if ($ttl = mysqli_num_rows($getposts1)) {
-		$error_message = "You can not delete this product.<br>Someone ordered this.";
+	$stmt = $pdo->prepare("SELECT pid FROM orders WHERE pid=:epid");
+	$stmt->execute(['epid' => $epid]);
+	$getposts1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	if ($ttl = count($getposts1)) {
+		$error_message = "You cannot delete this product.<br>Someone has ordered this.";
 	} else {
-		if (mysqli_query($con, "DELETE FROM products WHERE id='$epid'")) {
-			header('location: orders.php');
-		}
+		$stmt = $pdo->prepare("DELETE FROM products WHERE id=:epid");
+		$stmt->execute(['epid' => $epid]);
+		header('location: orders.php');
+		exit();
 	}
 }
 
